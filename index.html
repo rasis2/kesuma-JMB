@@ -44,7 +44,8 @@
     .sub-card-lg .sub-icon { font-size:20px; margin-top:1px; }
     .sub-name { font-size:13px; font-weight:700; font-family:var(--heading-font); margin-bottom:2px; }
     .sub-desc { font-size:10px; color:var(--text-muted); font-weight:400; line-height:1.4; }
-    .sub-icon { font-size:15px; }
+    .sub-card-center { flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:12px 8px; gap:5px; font-size:11px; }
+    .sub-card-center .sub-icon { font-size:18px; }
 
     /* Admin row */
     .admin-row { width:100%; max-width:480px; margin:0 auto; animation:fadeIn 0.5s 0.32s ease both; }
@@ -70,34 +71,40 @@
         <span class="sys-tag" id="txt-sys-parcel-tag"></span>
         <div class="sys-line"></div>
       </div>
-      <div class="sub-links" style="grid-template-columns:1fr 1fr">
+      <div class="sub-links">
         <a href="dispatcher.html" class="sub-card sub-card-lg"><span class="sub-icon">🚚</span><div><div class="sub-name" id="txt-dispatcher"></div><div class="sub-desc" id="txt-dispatcher-desc"></div></div></a>
         <a href="owner.html" class="sub-card sub-card-lg"><span class="sub-icon">🏠</span><div><div class="sub-name" id="txt-owner"></div><div class="sub-desc" id="txt-owner-desc"></div></div></a>
-        <a href="guard.html" class="sub-card"><span class="sub-icon">🛡️</span><span id="txt-guard"></span></a>
-        <a href="plan.html" class="sub-card"><span class="sub-icon">🚀</span><span id="txt-plan"></span></a>
       </div>
     </div>
 
-    <!-- VISITOR SYSTEM -->
+    <!-- VISITOR SYSTEM — single big card -->
     <div class="sys-block" style="animation-delay:0.26s">
       <div class="sys-label-row">
         <div class="sys-line"></div>
         <span class="sys-tag" id="txt-sys-visitor-tag"></span>
         <div class="sys-line"></div>
       </div>
-      <div class="sub-links" style="grid-template-columns:1fr 1fr">
-        <a href="visitor-register.html" class="sub-card sub-card-lg"><span class="sub-icon">📝</span><div><div class="sub-name" id="txt-vis-register"></div><div class="sub-desc" id="txt-vis-register-desc"></div></div></a>
-        <a href="visitor-check.html" class="sub-card sub-card-lg"><span class="sub-icon">🔍</span><div><div class="sub-name" id="txt-vis-check"></div><div class="sub-desc" id="txt-vis-check-desc"></div></div></a>
-      </div>
+      <a href="visitor-register.html" class="sys-main">
+        <div class="sys-main-icon teal">🪪</div>
+        <div class="sys-main-info">
+          <div class="sys-main-name" id="txt-sys-visitor"></div>
+          <div class="sys-main-desc" id="txt-sys-visitor-desc"></div>
+        </div>
+        <span class="sys-arrow">→</span>
+      </a>
     </div>
 
-    <!-- ADMIN + ABOUT row -->
+    <!-- UTILITY GRID — guard, owner, plan, admin, how, about, contact -->
     <div class="admin-row">
-      <div class="sub-links">
-        <a href="admin.html" class="sub-card"><span class="sub-icon">⚙️</span><span id="txt-admin"></span></a>
-        <a href="how.html" class="sub-card"><span class="sub-icon">📖</span><span id="txt-how"></span></a>
-        <a href="about.html" class="sub-card"><span class="sub-icon">✦</span><span id="txt-about"></span></a>
-        <a href="contact.html" class="sub-card"><span class="sub-icon">💬</span><span id="txt-contact"></span></a>
+      <div class="sub-links" style="grid-template-columns:repeat(4,1fr)">
+        <a href="guard.html" class="sub-card sub-card-center"><span class="sub-icon">🛡️</span><span id="txt-guard"></span></a>
+        <a href="owner.html" class="sub-card sub-card-center"><span class="sub-icon">🏠</span><span id="txt-owner-util"></span></a>
+        <a href="plan.html" class="sub-card sub-card-center"><span class="sub-icon">🚀</span><span id="txt-plan"></span></a>
+        <a href="admin.html" class="sub-card sub-card-center"><span class="sub-icon">⚙️</span><span id="txt-admin"></span></a>
+        <a href="how.html" class="sub-card sub-card-center"><span class="sub-icon">📖</span><span id="txt-how"></span></a>
+        <a href="about.html" class="sub-card sub-card-center"><span class="sub-icon">✦</span><span id="txt-about"></span></a>
+        <a href="contact.html" class="sub-card sub-card-center"><span class="sub-icon">💬</span><span id="txt-contact"></span></a>
+        <a href="visitor-check.html" class="sub-card sub-card-center"><span class="sub-icon">🔍</span><span id="txt-vis-check-util"></span></a>
       </div>
     </div>
   </div>
@@ -117,13 +124,16 @@
     document.getElementById('txt-owner').textContent = t('card_owner')
     document.getElementById('txt-owner-desc').textContent = t('card_owner_desc')
     document.getElementById('txt-sys-visitor-tag').textContent = t('sys_visitor')
-    document.getElementById('txt-vis-register').textContent = t('vis_register_title')
-    document.getElementById('txt-vis-register-desc').textContent = t('vis_register_desc')
-    document.getElementById('txt-vis-check').textContent = t('vis_check_title')
-    document.getElementById('txt-vis-check-desc').textContent = t('vis_check_desc')
+    document.getElementById('txt-sys-visitor').textContent = t('sys_visitor')
+    document.getElementById('txt-sys-visitor-desc').textContent = t('sys_visitor_desc')
     document.getElementById('txt-guard').textContent = t('guard_title')
+    document.getElementById('txt-owner-util').textContent = t('card_owner')
     document.getElementById('txt-plan').textContent = t('plan_short')
     document.getElementById('txt-admin').textContent = t('card_admin')
+    document.getElementById('txt-how').textContent = t('card_how')
+    document.getElementById('txt-about').textContent = t('card_about')
+    document.getElementById('txt-contact').textContent = t('contact_title')
+    document.getElementById('txt-vis-check-util').textContent = t('vis_check_title')
     document.getElementById('txt-how').textContent = t('card_how')
     document.getElementById('txt-about').textContent = t('card_about')
     document.getElementById('txt-contact').textContent = t('contact_title')
