@@ -92,7 +92,7 @@ const TRANSLATIONS = {
     how_steps_owner2: ["Login ke halaman <strong>Pemilik</strong>","Pergi tab <strong>Pelawat</strong>","Semak senarai pelawat yang ada status <strong>Menunggu</strong>","Klik <strong>Lulus</strong> atau <strong>Tolak</strong> ikut budi bicara"],
     how_steps_guard: ["Login ke halaman <strong>Guard</strong> dengan PIN (1125)","Semak senarai pelawat yang ada status <strong>Diluluskan</strong>","Bila pelawat tiba dan tunjuk QR/kod, klik <strong>Check In</strong>","Bila pelawat keluar, klik <strong>Check Out</strong>"],
     how_steps_admin: ["Login dengan PIN Admin (1125)","Tab <strong>Parsel</strong> — urus semua unit, edit emel/telefon pemilik","Tab <strong>Pelawat</strong> — tengok semua rekod lawatan, boleh lulus/tolak","Filter dan cari mengikut unit, nama, atau status"],
-    hub: "Kesuma Parcel Hub",
+    hub: "Kesuma JMB Hub",
     save: "Simpan",
     check: "Semak",
     loading: "Memuatkan...",
@@ -108,7 +108,7 @@ const TRANSLATIONS = {
     // Index
     index_badge: "Sistem Parsel Kondominium",
     index_title1: "Kesuma",
-    index_title2: "Parcel Hub",
+    index_title2: "JMB Hub",
     index_subtitle: "Sistem pengurusan parsel berpusat untuk penghuni dan pentadbir kondominium.",
     card_dispatcher: "Dispatcher",
     card_dispatcher_desc: "Daftar parsel baru",
@@ -183,7 +183,7 @@ const TRANSLATIONS = {
 
     // About
     about_title: "Tentang Projek",
-    about_subtitle: "Kisah di sebalik Kesuma Parcel Hub.",
+    about_subtitle: "Kisah di sebalik Kesuma JMB Hub.",
 
     // How It Works
     how_title: "Cara Guna",
@@ -282,7 +282,7 @@ const TRANSLATIONS = {
     how_steps_owner2: ["Login to the <strong>Owner</strong> page","Go to the <strong>Visitor</strong> tab","Check the list of visitors with <strong>Pending</strong> status","Click <strong>Approve</strong> or <strong>Reject</strong> accordingly"],
     how_steps_guard: ["Login to <strong>Guard</strong> page with PIN (1125)","Check the list of <strong>Approved</strong> visitors","When visitor arrives and shows QR/code, click <strong>Check In</strong>","When visitor leaves, click <strong>Check Out</strong>"],
     how_steps_admin: ["Login with Admin PIN (1125)","<strong>Parcel</strong> tab — manage all units, edit owner email/phone","<strong>Visitor</strong> tab — view all visit records, can approve/reject","Filter and search by unit, name, or status"],
-    hub: "Kesuma Parcel Hub",
+    hub: "Kesuma JMB Hub",
     save: "Save",
     check: "Check",
     loading: "Loading...",
@@ -297,7 +297,7 @@ const TRANSLATIONS = {
 
     index_badge: "Condominium Parcel System",
     index_title1: "Kesuma",
-    index_title2: "Parcel Hub",
+    index_title2: "JMB Hub",
     index_subtitle: "A centralised parcel management system for residents and administrators.",
     card_dispatcher: "Dispatcher",
     card_dispatcher_desc: "Register parcels",
@@ -366,7 +366,7 @@ const TRANSLATIONS = {
     admin_next: "Next →",
 
     about_title: "About",
-    about_subtitle: "The story behind Kesuma Parcel Hub.",
+    about_subtitle: "The story behind Kesuma JMB Hub.",
 
     how_title: "How It Works",
     how_subtitle: "A quick guide for each section of the system.",
@@ -479,7 +479,7 @@ const TRANSLATIONS = {
 
     index_badge: "公寓包裹系统",
     index_title1: "Kesuma",
-    index_title2: "包裹中心",
+    index_title2: "JMB 中心",
     index_subtitle: "为居民和管理员提供集中的包裹管理系统。",
     card_dispatcher: "派送员",
     card_dispatcher_desc: "登记包裹",
@@ -661,7 +661,7 @@ const TRANSLATIONS = {
 
     index_badge: "அபார்ட்மென்ட் பார்சல் அமைப்பு",
     index_title1: "Kesuma",
-    index_title2: "பார்சல் மையம்",
+    index_title2: "JMB மையம்",
     index_subtitle: "குடியிருப்பாளர்களுக்கும் நிர்வாகிகளுக்கும் மையப்படுத்தப்பட்ட பார்சல் மேலாண்மை அமைப்பு.",
     card_dispatcher: "டிஸ்பேட்சர்",
     card_dispatcher_desc: "வந்த பார்சல்களை பதிவு செய்யவும்",
