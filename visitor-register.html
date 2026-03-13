@@ -180,7 +180,7 @@
     document.getElementById('opt-lorry').textContent = t('vis_vehicle_lorry')
     document.getElementById('opt-none').textContent = t('vis_vehicle_none')
     document.getElementById('txt-vehicle-plate-label').textContent = t('vis_vehicle_plate')
-    document.getElementById('visPlate').placeholder = t('vis_vehicle_plate_ph')
+    document.getElementById('visPlate').placeholder = t('vis_vehicle_plate_ph_req')
     document.getElementById('txt-submit').textContent = '✓  ' + t('vis_submit')
     document.getElementById('txt-copy-btn').textContent = t('vis_copy_code')
     document.getElementById('txt-dl-btn').textContent = t('vis_download_qr')
@@ -251,7 +251,7 @@
       const purpose = document.getElementById('visPurpose').value
       const vehicle_type = document.getElementById('visVehicleType').value
       const vehicle_plate = document.getElementById('visPlate').value.trim().toUpperCase()
-      if (!name||!ic||!phone||!unit||!purpose) { showToast(t('vis_error_fill'),'error-toast'); return }
+      if (!name||!ic||!phone||!unit||!purpose||!vehicle_plate) { showToast(t('vis_error_fill'),'error-toast'); return }
 
       const btn = document.getElementById('txt-submit')
       btn.textContent = '⏳ ' + t('loading'); btn.disabled = true
