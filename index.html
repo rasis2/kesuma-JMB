@@ -40,6 +40,10 @@
     .sub-links { display:grid; grid-template-columns:1fr 1fr; gap:7px; }
     .sub-card { background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:10px 12px; text-decoration:none; color:inherit; display:flex; align-items:center; gap:8px; transition:all 0.2s; font-size:12px; font-weight:600; }
     .sub-card:hover { border-color:rgba(var(--accent-rgb),0.35); background:var(--surface); }
+    .sub-card-lg { padding:14px; align-items:flex-start; flex-direction:row; gap:10px; }
+    .sub-card-lg .sub-icon { font-size:20px; margin-top:1px; }
+    .sub-name { font-size:13px; font-weight:700; font-family:var(--heading-font); margin-bottom:2px; }
+    .sub-desc { font-size:10px; color:var(--text-muted); font-weight:400; line-height:1.4; }
     .sub-icon { font-size:15px; }
 
     /* Admin row */
@@ -66,15 +70,9 @@
         <span class="sys-tag" id="txt-sys-parcel-tag"></span>
         <div class="sys-line"></div>
       </div>
-      <a href="parcel.html" class="sys-main">
-        <div class="sys-main-icon gold">📦</div>
-        <div class="sys-main-info">
-          <div class="sys-main-name" id="txt-sys-parcel"></div>
-          <div class="sys-main-desc" id="txt-sys-parcel-desc"></div>
-        </div>
-        <span class="sys-arrow">→</span>
-      </a>
-      <div class="sub-links">
+      <div class="sub-links" style="grid-template-columns:1fr 1fr">
+        <a href="dispatcher.html" class="sub-card sub-card-lg"><span class="sub-icon">🚚</span><div><div class="sub-name" id="txt-dispatcher"></div><div class="sub-desc" id="txt-dispatcher-desc"></div></div></a>
+        <a href="owner.html" class="sub-card sub-card-lg"><span class="sub-icon">🏠</span><div><div class="sub-name" id="txt-owner"></div><div class="sub-desc" id="txt-owner-desc"></div></div></a>
         <a href="guard.html" class="sub-card"><span class="sub-icon">🛡️</span><span id="txt-guard"></span></a>
         <a href="plan.html" class="sub-card"><span class="sub-icon">🚀</span><span id="txt-plan"></span></a>
       </div>
@@ -87,17 +85,9 @@
         <span class="sys-tag" id="txt-sys-visitor-tag"></span>
         <div class="sys-line"></div>
       </div>
-      <a href="visitor.html" class="sys-main">
-        <div class="sys-main-icon teal">🪪</div>
-        <div class="sys-main-info">
-          <div class="sys-main-name" id="txt-sys-visitor"></div>
-          <div class="sys-main-desc" id="txt-sys-visitor-desc"></div>
-        </div>
-        <span class="sys-arrow">→</span>
-      </a>
-      <div class="sub-links">
-        <a href="visitor-register.html" class="sub-card"><span class="sub-icon">📝</span><span id="txt-vis-register"></span></a>
-        <a href="visitor-check.html" class="sub-card"><span class="sub-icon">🔍</span><span id="txt-vis-check"></span></a>
+      <div class="sub-links" style="grid-template-columns:1fr 1fr">
+        <a href="visitor-register.html" class="sub-card sub-card-lg"><span class="sub-icon">📝</span><div><div class="sub-name" id="txt-vis-register"></div><div class="sub-desc" id="txt-vis-register-desc"></div></div></a>
+        <a href="visitor-check.html" class="sub-card sub-card-lg"><span class="sub-icon">🔍</span><div><div class="sub-name" id="txt-vis-check"></div><div class="sub-desc" id="txt-vis-check-desc"></div></div></a>
       </div>
     </div>
 
@@ -122,15 +112,17 @@
     document.getElementById('txt-h1').innerHTML = t('index_title1')+'<br><span>'+t('index_title2')+'</span>'
     document.getElementById('txt-subtitle').textContent = t('index_subtitle')
     document.getElementById('txt-sys-parcel-tag').textContent = t('sys_parcel')
-    document.getElementById('txt-sys-parcel').textContent = t('sys_parcel')
-    document.getElementById('txt-sys-parcel-desc').textContent = t('sys_parcel_desc')
+    document.getElementById('txt-dispatcher').textContent = t('card_dispatcher')
+    document.getElementById('txt-dispatcher-desc').textContent = t('card_dispatcher_desc')
+    document.getElementById('txt-owner').textContent = t('card_owner')
+    document.getElementById('txt-owner-desc').textContent = t('card_owner_desc')
     document.getElementById('txt-sys-visitor-tag').textContent = t('sys_visitor')
-    document.getElementById('txt-sys-visitor').textContent = t('sys_visitor')
-    document.getElementById('txt-sys-visitor-desc').textContent = t('sys_visitor_desc')
+    document.getElementById('txt-vis-register').textContent = t('vis_register_title')
+    document.getElementById('txt-vis-register-desc').textContent = t('vis_register_desc')
+    document.getElementById('txt-vis-check').textContent = t('vis_check_title')
+    document.getElementById('txt-vis-check-desc').textContent = t('vis_check_desc')
     document.getElementById('txt-guard').textContent = t('guard_title')
     document.getElementById('txt-plan').textContent = t('plan_short')
-    document.getElementById('txt-vis-register').textContent = t('vis_register_title')
-    document.getElementById('txt-vis-check').textContent = t('vis_check_title')
     document.getElementById('txt-admin').textContent = t('card_admin')
     document.getElementById('txt-how').textContent = t('card_how')
     document.getElementById('txt-about').textContent = t('card_about')
