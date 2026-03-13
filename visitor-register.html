@@ -90,6 +90,22 @@
             </select>
           </div>
         </div>
+        <div class="field">
+          <label id="txt-vehicle-type-label"></label>
+          <div class="select-wrap">
+            <select id="visVehicleType">
+              <option value="" id="opt-vehicle-ph"></option>
+              <option value="Kereta" id="opt-car"></option>
+              <option value="Motosikal" id="opt-moto"></option>
+              <option value="Lori / Van" id="opt-lorry"></option>
+              <option value="Tiada" id="opt-none"></option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label id="txt-vehicle-plate-label"></label>
+          <input id="visPlate" type="text" style="text-transform:uppercase">
+        </div>
       </div>
       <button class="btn btn-gold animate-in" style="animation-delay:0.14s" onclick="registerVisitor()" id="txt-submit"></button>
     </div>
@@ -157,6 +173,14 @@
     document.getElementById('opt-kerja').textContent = t('vis_purpose_work')
     document.getElementById('opt-baiki').textContent = t('vis_purpose_repair')
     document.getElementById('opt-lain').textContent = t('vis_purpose_other')
+    document.getElementById('txt-vehicle-type-label').textContent = t('vis_vehicle_type')
+    document.getElementById('opt-vehicle-ph').textContent = t('vis_vehicle_type_ph')
+    document.getElementById('opt-car').textContent = t('vis_vehicle_car')
+    document.getElementById('opt-moto').textContent = t('vis_vehicle_moto')
+    document.getElementById('opt-lorry').textContent = t('vis_vehicle_lorry')
+    document.getElementById('opt-none').textContent = t('vis_vehicle_none')
+    document.getElementById('txt-vehicle-plate-label').textContent = t('vis_vehicle_plate')
+    document.getElementById('visPlate').placeholder = t('vis_vehicle_plate_ph')
     document.getElementById('txt-submit').textContent = '✓  ' + t('vis_submit')
     document.getElementById('txt-copy-btn').textContent = t('vis_copy_code')
     document.getElementById('txt-dl-btn').textContent = t('vis_download_qr')
@@ -225,13 +249,15 @@
       const phone = document.getElementById('visPhone').value.trim()
       const unit = document.getElementById('unit').value
       const purpose = document.getElementById('visPurpose').value
+      const vehicle_type = document.getElementById('visVehicleType').value
+      const vehicle_plate = document.getElementById('visPlate').value.trim().toUpperCase()
       if (!name||!ic||!phone||!unit||!purpose) { showToast(t('vis_error_fill'),'error-toast'); return }
 
       const btn = document.getElementById('txt-submit')
       btn.textContent = '⏳ ' + t('loading'); btn.disabled = true
       try {
         const result = await apiRegisterVisitor({name, ic_no:ic, phone, unit, purpose})
-        showSuccess(result, {name, ic, phone, unit, purpose})
+        showSuccess(result, {name, ic, phone, unit, purpose, vehicle_type, vehicle_plate})
       } catch(e) {
         showToast(t('error_server'), 'error-toast'); console.error(e)
       } finally {
@@ -264,6 +290,8 @@
         [t('vis_phone'), info.phone],
         ['Unit', info.unit],
         [t('vis_purpose'), info.purpose],
+        [t('vis_vehicle_type'), info.vehicle_type || '—'],
+        [t('vis_vehicle_plate'), info.vehicle_plate || '—'],
         [t('vis_status'), t('vis_status_pending')]
       ]
       document.getElementById('detailRows').innerHTML = rows.map(([l,v]) =>
@@ -274,8 +302,9 @@
     function resetForm() {
       document.getElementById('successView').style.display = 'none'
       document.getElementById('formView').style.display = 'block'
-      ;['visName','visIc','visPhone','unit'].forEach(id => document.getElementById(id).value = '')
+      ;['visName','visIc','visPhone','unit','visPlate'].forEach(id => document.getElementById(id).value = '')
       document.getElementById('visPurpose').value = ''
+      document.getElementById('visVehicleType').value = ''
       document.getElementById('floorSelect').value = ''
       document.getElementById('unitField').style.display = 'none'
       document.getElementById('unitConfirm').style.display = 'none'

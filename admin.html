@@ -120,7 +120,7 @@
           <input id="visSearchInput" oninput="applyVisitorFilter()" style="flex:1;min-width:120px;height:40px">
           <div class="select-wrap" style="flex:0 0 150px">
             <select id="visStatusFilter" onchange="applyVisitorFilter()" style="height:40px">
-              <option value="all"></option>
+              <option value="all" id="vopt-all"></option>
               <option value="Pending" id="vopt-pending"></option>
               <option value="Approved" id="vopt-approved"></option>
               <option value="Rejected" id="vopt-rejected"></option>
@@ -168,6 +168,7 @@
     document.getElementById('txt-vstat-pending').textContent = t('vis_status_pending')
     document.getElementById('txt-vstat-approved').textContent = t('vis_status_approved')
     document.getElementById('txt-vstat-in').textContent = t('vis_status_checkedin')
+    document.getElementById('vopt-all').textContent = t('admin_filter_all')
     document.getElementById('vopt-pending').textContent = t('vis_status_pending')
     document.getElementById('vopt-approved').textContent = t('vis_status_approved')
     document.getElementById('vopt-rejected').textContent = t('vis_status_rejected')
