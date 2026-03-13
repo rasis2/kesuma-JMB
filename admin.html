@@ -116,11 +116,9 @@
             <div style="font-size:11px;color:var(--text-muted);margin-top:2px" id="txt-vstat-in"></div>
           </div>
         </div>
-        <div style="margin-bottom:10px">
-          <input id="visSearchInput" oninput="applyVisitorFilter()" style="height:40px">
-        </div>
-        <div style="margin-bottom:10px">
-          <div class="select-wrap">
+        <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap">
+          <input id="visSearchInput" oninput="applyVisitorFilter()" style="flex:1;min-width:120px;height:40px">
+          <div class="select-wrap" style="flex:0 0 150px">
             <select id="visStatusFilter" onchange="applyVisitorFilter()" style="height:40px">
               <option value="all"></option>
               <option value="Pending" id="vopt-pending"></option>

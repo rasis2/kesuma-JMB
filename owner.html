@@ -40,17 +40,8 @@
           <input id="unit" onkeydown="if(event.key==='Enter')checkOwner()">
         </div>
         <div class="field">
-          <label id="txt-email-label"></label>
-          <input id="email" type="email" onkeydown="if(event.key==='Enter')checkOwner()">
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;margin:6px 0">
-          <div style="flex:1;height:1px;background:var(--border)"></div>
-          <span style="font-size:11px;color:var(--text-muted);font-weight:600">ATAU / OR</span>
-          <div style="flex:1;height:1px;background:var(--border)"></div>
-        </div>
-        <div class="field">
-          <label id="txt-phone-label"></label>
-          <input id="phone" type="tel" onkeydown="if(event.key==='Enter')checkOwner()">
+          <label id="txt-credential-label"></label>
+          <input id="credential" onkeydown="if(event.key==='Enter')checkOwner()">
         </div>
         <div class="error-text" id="ownerError" style="margin-top:4px"></div>
       </div>
@@ -110,10 +101,8 @@
     document.getElementById('txt-section').textContent = t('owner_section')
     document.getElementById('txt-unit-label').textContent = t('owner_unit_label')
     document.getElementById('unit').placeholder = t('owner_unit_placeholder')
-    document.getElementById('txt-email-label').textContent = t('owner_email_label')
-    document.getElementById('email').placeholder = t('owner_email_placeholder')
-    document.getElementById('txt-phone-label').textContent = t('owner_phone_label')
-    document.getElementById('phone').placeholder = t('owner_phone_placeholder')
+    document.getElementById('txt-credential-label').textContent = t('owner_credential_label')
+    document.getElementById('credential').placeholder = t('owner_credential_ph')
     document.getElementById('txt-check-btn').textContent = '🔍  ' + t('check')
     document.getElementById('tab-parcel').textContent = '📦 ' + t('sys_parcel')
     document.getElementById('tab-visitor').textContent = '🪪 ' + t('sys_visitor')
@@ -143,12 +132,14 @@
 
     function checkOwner() {
       const unit = document.getElementById('unit').value.trim()
-      const email = document.getElementById('email').value.trim()
-      const phone = document.getElementById('phone').value.trim()
+      const credential = document.getElementById('credential').value.trim()
       const err = document.getElementById('ownerError')
-      if (!unit || (!email && !phone)) { err.textContent = t('owner_error_fill'); return }
+      if (!unit || !credential) { err.textContent = t('owner_error_fill'); return }
       err.textContent = ''
       currentUnit = unit
+      const isEmail = credential.includes('@')
+      const email = isEmail ? credential : ''
+      const phone = isEmail ? '' : credential
 
       document.getElementById('parcelResult').innerHTML = '<p style="color:var(--text-muted);font-size:13px;text-align:center;padding:24px">'+t('loading')+'</p>'
 

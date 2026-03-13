@@ -8,31 +8,28 @@
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="stylesheet" href="css/style.css">
   <style>
-    .cat-header { display:flex; align-items:center; gap:12px; margin:28px 0 16px; }
-    .cat-icon { width:40px; height:40px; border-radius:11px; display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
-    .cat-icon.gold { background:var(--accent-dim); border:1px solid rgba(var(--accent-rgb),0.2); }
-    .cat-icon.teal { background:rgba(76,175,125,0.1); border:1px solid rgba(76,175,125,0.2); }
-    .cat-icon.red { background:rgba(224,92,92,0.1); border:1px solid rgba(224,92,92,0.2); }
-    .cat-title { font-family:var(--heading-font); font-size:18px; font-weight:800; letter-spacing:-0.4px; }
-    .cat-sub { font-size:12px; color:var(--text-muted); margin-top:2px; }
-    .divider { height:1px; background:var(--border); margin:8px 0 20px; }
-    .role-block { margin-bottom:20px; }
-    .role-header { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
-    .role-icon { width:34px; height:34px; border-radius:9px; display:flex; align-items:center; justify-content:center; font-size:15px; flex-shrink:0; }
-    .role-icon.gold { background:var(--accent-dim); border:1px solid rgba(var(--accent-rgb),0.2); }
-    .role-icon.green { background:rgba(76,175,125,0.1); border:1px solid rgba(76,175,125,0.2); }
-    .role-icon.purple { background:rgba(159,122,234,0.1); border:1px solid rgba(159,122,234,0.2); }
-    .role-icon.blue { background:rgba(99,179,237,0.1); border:1px solid rgba(99,179,237,0.2); }
-    .role-icon.red { background:rgba(224,92,92,0.1); border:1px solid rgba(224,92,92,0.2); }
-    .role-name { font-family:var(--heading-font); font-size:14px; font-weight:800; }
-    .role-tag { font-size:11px; color:var(--text-muted); }
-    .step-list { list-style:none; padding:0; }
+    .acc-item { border:1px solid var(--border); border-radius:12px; overflow:hidden; margin-bottom:8px; transition:border-color 0.2s; }
+    .acc-item.open { border-color:rgba(var(--accent-rgb),0.35); }
+    .acc-header { display:flex; align-items:center; gap:12px; padding:14px 16px; cursor:pointer; user-select:none; }
+    .acc-icon { width:34px; height:34px; border-radius:9px; display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0; }
+    .acc-icon.gold  { background:var(--accent-dim); border:1px solid rgba(var(--accent-rgb),0.2); }
+    .acc-icon.teal  { background:rgba(76,175,125,0.1); border:1px solid rgba(76,175,125,0.2); }
+    .acc-icon.purple{ background:rgba(159,122,234,0.1); border:1px solid rgba(159,122,234,0.2); }
+    .acc-icon.blue  { background:rgba(99,179,237,0.1); border:1px solid rgba(99,179,237,0.2); }
+    .acc-icon.red   { background:rgba(224,92,92,0.1); border:1px solid rgba(224,92,92,0.2); }
+    .acc-label { flex:1 }
+    .acc-name { font-family:var(--heading-font); font-size:14px; font-weight:800; }
+    .acc-role { font-size:11px; color:var(--text-muted); margin-top:1px; }
+    .acc-chevron { font-size:11px; color:var(--text-muted); transition:transform 0.25s; }
+    .acc-item.open .acc-chevron { transform:rotate(180deg); }
+    .acc-body { display:none; padding:0 16px 14px; }
+    .acc-item.open .acc-body { display:block; }
+    .step-list { list-style:none; padding:0; margin:0; }
     .step-item { display:flex; gap:12px; padding:9px 0; border-bottom:1px solid var(--border); font-size:13px; line-height:1.5; }
     .step-item:last-child { border-bottom:none; }
     .step-num { width:22px; height:22px; border-radius:50%; background:var(--accent-dim); border:1px solid rgba(var(--accent-rgb),0.2); color:var(--accent); font-size:10px; font-weight:800; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px; }
     .step-text { flex:1; color:var(--text-muted); }
     .step-text strong { color:var(--text); font-weight:600; }
-    .flow-arrow { text-align:center; font-size:12px; color:var(--text-muted); padding:6px 0; opacity:0.6; }
   </style>
 </head>
 <body>
@@ -43,115 +40,9 @@
       <h1 class="page-title" id="txt-title"></h1>
       <p class="page-subtitle" id="txt-subtitle"></p>
     </div>
-
-    <!-- ═══ PARCEL SYSTEM ═══ -->
-    <div class="animate-in" style="animation-delay:0.05s">
-      <div class="cat-header">
-        <div class="cat-icon gold">📦</div>
-        <div>
-          <div class="cat-title" id="txt-cat-parcel"></div>
-          <div class="cat-sub" id="txt-cat-parcel-sub"></div>
-        </div>
-      </div>
-      <div class="divider"></div>
-
-      <!-- Dispatcher -->
-      <div class="section role-block animate-in" style="animation-delay:0.08s">
-        <div class="role-header">
-          <div class="role-icon gold">🚚</div>
-          <div>
-            <div class="role-name" id="txt-role-disp"></div>
-            <div class="role-tag" id="txt-role-disp-tag"></div>
-          </div>
-        </div>
-        <ul class="step-list" id="steps-disp"></ul>
-      </div>
-
-      <!-- Owner (Parcel) -->
-      <div class="section role-block animate-in" style="animation-delay:0.11s">
-        <div class="role-header">
-          <div class="role-icon green">🏠</div>
-          <div>
-            <div class="role-name" id="txt-role-owner"></div>
-            <div class="role-tag" id="txt-role-owner-tag"></div>
-          </div>
-        </div>
-        <ul class="step-list" id="steps-owner"></ul>
-      </div>
-    </div>
-
-    <!-- ═══ VISITOR SYSTEM ═══ -->
-    <div class="animate-in" style="animation-delay:0.14s">
-      <div class="cat-header">
-        <div class="cat-icon teal">🪪</div>
-        <div>
-          <div class="cat-title" id="txt-cat-visitor"></div>
-          <div class="cat-sub" id="txt-cat-visitor-sub"></div>
-        </div>
-      </div>
-      <div class="divider"></div>
-
-      <!-- Visitor -->
-      <div class="section role-block animate-in" style="animation-delay:0.17s">
-        <div class="role-header">
-          <div class="role-icon blue">🪪</div>
-          <div>
-            <div class="role-name" id="txt-role-vis"></div>
-            <div class="role-tag" id="txt-role-vis-tag"></div>
-          </div>
-        </div>
-        <ul class="step-list" id="steps-vis"></ul>
-      </div>
-
-      <!-- Owner (Visitor Approve) -->
-      <div class="section role-block animate-in" style="animation-delay:0.2s">
-        <div class="role-header">
-          <div class="role-icon green">🏠</div>
-          <div>
-            <div class="role-name" id="txt-role-owner2"></div>
-            <div class="role-tag" id="txt-role-owner2-tag"></div>
-          </div>
-        </div>
-        <ul class="step-list" id="steps-owner2"></ul>
-      </div>
-
-      <!-- Guard -->
-      <div class="section role-block animate-in" style="animation-delay:0.23s">
-        <div class="role-header">
-          <div class="role-icon purple">🛡️</div>
-          <div>
-            <div class="role-name" id="txt-role-guard"></div>
-            <div class="role-tag" id="txt-role-guard-tag"></div>
-          </div>
-        </div>
-        <ul class="step-list" id="steps-guard"></ul>
-      </div>
-    </div>
-
-    <!-- ═══ ADMIN ═══ -->
-    <div class="animate-in" style="animation-delay:0.26s">
-      <div class="cat-header">
-        <div class="cat-icon red">⚙️</div>
-        <div>
-          <div class="cat-title" id="txt-cat-admin"></div>
-          <div class="cat-sub" id="txt-cat-admin-sub"></div>
-        </div>
-      </div>
-      <div class="divider"></div>
-
-      <div class="section role-block animate-in" style="animation-delay:0.29s">
-        <div class="role-header">
-          <div class="role-icon red">⚙️</div>
-          <div>
-            <div class="role-name" id="txt-role-admin"></div>
-            <div class="role-tag" id="txt-role-admin-tag"></div>
-          </div>
-        </div>
-        <ul class="step-list" id="steps-admin"></ul>
-      </div>
-    </div>
-
+    <div id="accordionList" class="animate-in" style="animation-delay:0.05s"></div>
   </main>
+
   <script src="js/i18n.js"></script>
   <script src="js/theme.js"></script>
   <script src="js/nav.js"></script>
@@ -160,38 +51,71 @@
     document.getElementById('txt-title').textContent = t('how_title')
     document.getElementById('txt-subtitle').textContent = t('how_subtitle')
 
-    document.getElementById('txt-cat-parcel').textContent = t('sys_parcel')
-    document.getElementById('txt-cat-parcel-sub').textContent = t('how_cat_parcel_sub')
-    document.getElementById('txt-cat-visitor').textContent = t('sys_visitor')
-    document.getElementById('txt-cat-visitor-sub').textContent = t('how_cat_visitor_sub')
-    document.getElementById('txt-cat-admin').textContent = t('card_admin')
-    document.getElementById('txt-cat-admin-sub').textContent = t('how_cat_admin_sub')
-
-    document.getElementById('txt-role-disp').textContent = t('card_dispatcher')
-    document.getElementById('txt-role-disp-tag').textContent = t('how_role_disp_tag')
-    document.getElementById('txt-role-owner').textContent = t('card_owner')
-    document.getElementById('txt-role-owner-tag').textContent = t('how_role_owner_tag')
-    document.getElementById('txt-role-vis').textContent = t('vis_register_title')
-    document.getElementById('txt-role-vis-tag').textContent = t('how_role_vis_tag')
-    document.getElementById('txt-role-owner2').textContent = t('card_owner')
-    document.getElementById('txt-role-owner2-tag').textContent = t('how_role_owner2_tag')
-    document.getElementById('txt-role-guard').textContent = t('guard_title')
-    document.getElementById('txt-role-guard-tag').textContent = t('how_role_guard_tag')
-    document.getElementById('txt-role-admin').textContent = t('card_admin')
-    document.getElementById('txt-role-admin-tag').textContent = t('how_role_admin_tag')
-
-    function renderSteps(elId, steps) {
-      document.getElementById(elId).innerHTML = steps.map((s,i) =>
-        `<li class="step-item"><div class="step-num">${i+1}</div><div class="step-text">${s}</div></li>`
-      ).join('')
+    const items = {
+      ms: [
+        { icon:'🚚', color:'gold',   name:'Dispatcher',        role:'Kakitangan penerimaan / penghantar',
+          steps:['<strong>Login</strong> dengan PIN Dispatcher (5555)','<strong>Pilih tingkat</strong> kemudian pilih nombor unit yang betul','<strong>Ambil gambar</strong> parsel dan pilih kurier','Tekan <strong>Daftar Parsel</strong> — rekod disimpan, pemilik boleh semak'] },
+        { icon:'🏠', color:'teal',   name:'Pemilik (Parsel)',  role:'Pemilik unit — semak & tandakan selesai',
+          steps:['Buka halaman <strong>Pemilik</strong>','Masukkan <strong>Unit + Emel ATAU Telefon</strong> untuk verify','Tengok tab <strong>Parsel</strong> — semak senarai parsel','Klik <strong>Selesai</strong> bila dah ambil parsel'] },
+        { icon:'📝', color:'blue',   name:'Daftar Pelawat',    role:'Pelawat dari luar yang nak masuk',
+          steps:['Buka halaman <strong>Daftar Lawatan</strong>','Isi nama, no. IC, telefon, unit yang nak dilawati, dan tujuan','Tekan <strong>Daftar Sekarang</strong> — dapat <strong>Kod Rujukan + QR Code</strong>','<strong>Salin atau download</strong> QR, tunjuk kepada guard masa tiba'] },
+        { icon:'🏠', color:'teal',   name:'Pemilik (Pelawat)', role:'Pemilik unit — lulus atau tolak pelawat',
+          steps:['Login ke halaman <strong>Pemilik</strong>','Pergi tab <strong>Pelawat</strong>','Semak senarai pelawat yang ada status <strong>Menunggu</strong>','Klik <strong>Lulus</strong> atau <strong>Tolak</strong> ikut budi bicara'] },
+        { icon:'🛡️', color:'purple', name:'Security / Guard',  role:'Keselamatan di pintu masuk',
+          steps:['Login ke halaman <strong>Security</strong> dengan PIN (9999)','Lihat senarai pelawat yang status <strong>Diluluskan</strong>','Bila pelawat tiba dan tunjuk QR atau kod, klik <strong>Check In</strong>','Bila pelawat keluar, cari rekod dan klik <strong>Check Out</strong>'] },
+        { icon:'⚙️', color:'red',    name:'Admin',             role:'Pengurus JMB — akses penuh',
+          steps:['Login dengan PIN Admin (1234)','Tab <strong>Parsel</strong> — semak semua unit, edit emel/telefon pemilik, pantau parsel tertunggak','Tab <strong>Pelawat</strong> — tengok semua rekod lawatan, filter by status, boleh lulus/tolak','Guna carian dan filter untuk cari unit atau pelawat tertentu'] },
+        { icon:'🔍', color:'blue',   name:'Semak Status Lawatan', role:'Pelawat yang dah daftar',
+          steps:['Buka halaman <strong>Semak Status</strong>','Masukkan <strong>Kod Rujukan</strong> yang diterima masa daftar (contoh: KES4X7MNP)','Tengok status semasa — Menunggu, Diluluskan, Ditolak, atau Telah Masuk','Kalau diluluskan, tunjuk QR code kepada guard'] },
+      ],
+      en: [
+        { icon:'🚚', color:'gold',   name:'Dispatcher',        role:'Reception staff / courier',
+          steps:['<strong>Login</strong> with Dispatcher PIN (5555)','<strong>Select floor</strong> then the correct unit number','<strong>Take a photo</strong> of the parcel and select courier','Press <strong>Register Parcel</strong> — record saved, owner can check'] },
+        { icon:'🏠', color:'teal',   name:'Owner (Parcels)',   role:'Unit owner — check & mark done',
+          steps:['Open the <strong>Owner</strong> page','Enter <strong>Unit + Email OR Phone</strong> to verify','Check the <strong>Parcel</strong> tab — view parcel list','Click <strong>Done</strong> once you have collected the parcel'] },
+        { icon:'📝', color:'blue',   name:'Register Visit',    role:'Outside visitor wanting to enter',
+          steps:['Open the <strong>Register Visit</strong> page','Fill in name, IC number, phone, unit to visit, and purpose','Press <strong>Register Now</strong> — receive <strong>Reference Code + QR Code</strong>','<strong>Copy or download</strong> the QR, show to guard on arrival'] },
+        { icon:'🏠', color:'teal',   name:'Owner (Visitors)',  role:'Unit owner — approve or reject visitors',
+          steps:['Login to the <strong>Owner</strong> page','Go to the <strong>Visitor</strong> tab','Check visitors with <strong>Pending</strong> status','Click <strong>Approve</strong> or <strong>Reject</strong> accordingly'] },
+        { icon:'🛡️', color:'purple', name:'Security / Guard',  role:'Security at the entrance',
+          steps:['Login to <strong>Security</strong> page with PIN (9999)','View visitors with <strong>Approved</strong> status','When visitor arrives and shows QR or code, click <strong>Check In</strong>','When visitor leaves, find the record and click <strong>Check Out</strong>'] },
+        { icon:'⚙️', color:'red',    name:'Admin',             role:'JMB manager — full access',
+          steps:['Login with Admin PIN (1234)','<strong>Parcel</strong> tab — view all units, edit owner contacts, monitor overdue parcels','<strong>Visitor</strong> tab — view all visit records, filter by status, approve/reject','Use search and filter to find specific units or visitors'] },
+        { icon:'🔍', color:'blue',   name:'Check Visit Status', role:'Visitors who have registered',
+          steps:['Open the <strong>Check Status</strong> page','Enter the <strong>Reference Code</strong> received during registration (e.g. KES4X7MNP)','View current status — Pending, Approved, Rejected, or Checked In','If approved, show QR code to guard'] },
+      ]
     }
 
-    renderSteps('steps-disp', t('how_steps_disp'))
-    renderSteps('steps-owner', t('how_steps_owner'))
-    renderSteps('steps-vis', t('how_steps_vis'))
-    renderSteps('steps-owner2', t('how_steps_owner2'))
-    renderSteps('steps-guard', t('how_steps_guard'))
-    renderSteps('steps-admin', t('how_steps_admin'))
+    const lang = getLang()
+    const list = items[lang] || items.en
+
+    const container = document.getElementById('accordionList')
+    list.forEach((item, i) => {
+      const div = document.createElement('div')
+      div.className = 'acc-item'
+      div.innerHTML = `
+        <div class="acc-header" onclick="toggle(this)">
+          <div class="acc-icon ${item.color}">${item.icon}</div>
+          <div class="acc-label">
+            <div class="acc-name">${item.name}</div>
+            <div class="acc-role">${item.role}</div>
+          </div>
+          <span class="acc-chevron">▼</span>
+        </div>
+        <div class="acc-body">
+          <ul class="step-list">
+            ${item.steps.map((s,j) => `<li class="step-item"><div class="step-num">${j+1}</div><div class="step-text">${s}</div></li>`).join('')}
+          </ul>
+        </div>`
+      container.appendChild(div)
+    })
+
+    function toggle(header) {
+      const item = header.closest('.acc-item')
+      const wasOpen = item.classList.contains('open')
+      document.querySelectorAll('.acc-item').forEach(el => el.classList.remove('open'))
+      if (!wasOpen) item.classList.add('open')
+    }
   </script>
 </body>
 </html>

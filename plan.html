@@ -2,13 +2,15 @@
 <html lang="ms">
 <head>
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Scale-Up Plan — Kesuma Parcel</title>
-      <link rel="manifest" href="site.webmanifest">
+  <title>Scale-Up Plan — Kesuma JMB</title>
+  <link rel="manifest" href="site.webmanifest">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
-  <link rel="apple-touch-icon" href="favicon.ico">
   <link rel="stylesheet" href="css/style.css">
   <style>
+    .sys-tab-bar { display:flex; gap:6px; margin-bottom:20px; background:var(--surface2); border-radius:10px; padding:4px; }
+    .sys-tab { flex:1; text-align:center; padding:8px; border-radius:7px; font-size:12px; font-weight:700; cursor:pointer; transition:all 0.2s; color:var(--text-muted); }
+    .sys-tab.active { background:var(--surface); color:var(--text); box-shadow:0 1px 4px rgba(0,0,0,0.15); }
     .phase-card { border-left:3px solid var(--accent); padding-left:20px; margin-bottom:28px; position:relative; }
     .phase-card::before { content:''; position:absolute; left:-8px; top:4px; width:13px; height:13px; border-radius:50%; background:var(--accent); border:2px solid var(--bg); }
     .phase-num { font-size:11px; font-weight:700; color:var(--accent); letter-spacing:2px; text-transform:uppercase; margin-bottom:6px; }
@@ -37,35 +39,40 @@
       <p class="page-subtitle" id="txt-subtitle"></p>
     </div>
 
-    <div class="section animate-in" style="animation-delay:0.05s">
-      <div class="section-title" id="txt-phases-title"></div>
-      <div id="phasesContainer"></div>
+    <!-- System tab -->
+    <div class="sys-tab-bar animate-in">
+      <div class="sys-tab active" onclick="switchPlan('parcel')" id="plan-tab-parcel"></div>
+      <div class="sys-tab" onclick="switchPlan('visitor')" id="plan-tab-visitor"></div>
     </div>
 
-    <div class="section animate-in" style="animation-delay:0.1s">
-      <div class="section-title" id="txt-cost-title"></div>
-      <table class="cost-table" id="costTable"></table>
-    </div>
-
-    <div class="section animate-in" style="animation-delay:0.15s">
-      <div class="section-title" id="txt-tech-title"></div>
-      <div style="margin-bottom:12px">
-        <div style="font-size:12px;color:var(--text-muted);margin-bottom:8px;font-weight:600" id="txt-tech-backend"></div>
-        <span class="tag">Node.js</span><span class="tag">Express</span><span class="tag">PostgreSQL</span><span class="tag">Supabase</span><span class="tag">Firebase</span>
+    <div id="planContent">
+      <div class="section animate-in" style="animation-delay:0.05s">
+        <div class="section-title" id="txt-phases-title"></div>
+        <div id="phasesContainer"></div>
       </div>
-      <div style="margin-bottom:12px">
-        <div style="font-size:12px;color:var(--text-muted);margin-bottom:8px;font-weight:600" id="txt-tech-notif"></div>
-        <span class="tag">WhatsApp Cloud API</span><span class="tag">Twilio SMS</span><span class="tag">FCM Push</span><span class="tag">NodeMailer</span>
+      <div class="section animate-in" style="animation-delay:0.1s">
+        <div class="section-title" id="txt-cost-title"></div>
+        <table class="cost-table" id="costTable"></table>
       </div>
-      <div>
-        <div style="font-size:12px;color:var(--text-muted);margin-bottom:8px;font-weight:600" id="txt-tech-frontend"></div>
-        <span class="tag">React / Next.js</span><span class="tag">React Native</span><span class="tag">PWA</span>
+      <div class="section animate-in" style="animation-delay:0.15s">
+        <div class="section-title" id="txt-tech-title"></div>
+        <div style="margin-bottom:12px">
+          <div style="font-size:12px;color:var(--text-muted);margin-bottom:8px;font-weight:600" id="txt-tech-backend"></div>
+          <div id="tags-backend"></div>
+        </div>
+        <div style="margin-bottom:12px">
+          <div style="font-size:12px;color:var(--text-muted);margin-bottom:8px;font-weight:600" id="txt-tech-notif"></div>
+          <div id="tags-notif"></div>
+        </div>
+        <div>
+          <div style="font-size:12px;color:var(--text-muted);margin-bottom:8px;font-weight:600" id="txt-tech-frontend"></div>
+          <div id="tags-frontend"></div>
+        </div>
       </div>
-    </div>
-
-    <div class="section animate-in" style="animation-delay:0.2s">
-      <div class="section-title" id="txt-note-title"></div>
-      <div class="note-box" id="txt-note"></div>
+      <div class="section animate-in" style="animation-delay:0.2s">
+        <div class="section-title" id="txt-note-title"></div>
+        <div class="note-box" id="txt-note"></div>
+      </div>
     </div>
   </main>
 
@@ -77,149 +84,154 @@
     document.getElementById('txt-title').textContent = t('plan_title')
     document.getElementById('txt-subtitle').textContent = t('plan_subtitle')
 
-    const content = {
+    const plans = {
       ms: {
-        phases_title: 'FASA PEMBANGUNAN',
-        cost_title: 'ANGGARAN KOS (BULANAN)',
-        tech_title: 'TEKNOLOGI DICADANGKAN',
-        tech_backend: 'Backend & Database',
-        tech_notif: 'Notifikasi',
-        tech_frontend: 'Frontend / Mobile',
-        note_title: 'NOTA PENTING',
-        note: '⚠️ <strong>Kos bergantung kepada jumlah pengguna dan mesej.</strong> Untuk kondominium dengan 625 unit — andaian 1–3 notifikasi/hari — WhatsApp API sahaja boleh mencecah RM 50–150/bulan. Pilihan lebih murah ialah <strong>WhatsApp Business (manual)</strong> atau gunakan <strong>email + push notification</strong> dulu sebelum beralih ke SMS/WhatsApp API.',
-        costs: [
-          ['WhatsApp Business API (Meta)', 'RM 0.08–0.12 / mesej'],
-          ['SMS Gateway (Nexmo/Twilio)', 'RM 0.05–0.10 / SMS'],
-          ['VPS Hosting (DigitalOcean/Vultr)', 'RM 20–80 / bulan'],
-          ['Domain + SSL', 'RM 40–80 / tahun'],
-          ['Firebase / Supabase (DB + Auth)', 'RM 0–90 / bulan'],
-          ['Push Notifications (FCM)', 'Percuma'],
-          ['Email (SendGrid / Mailgun)', 'RM 0–30 / bulan'],
-          ['Anggaran minimum (Fasa 2)', 'RM 60–150 / bulan', true],
-          ['Anggaran penuh (Fasa 3–4)', 'RM 200–500 / bulan', true],
-        ],
-        phases: [
-          { num:'FASA 1 · SEKARANG', title:'Sistem Asas (Sedia Ada)', cost:'Percuma', items:['Web app HTML/CSS/JS + Supabase backend','Daftar parsel dengan gambar, unit, kurier','Pemilik semak sendiri via web','Admin urus maklumat pemilik','Support 4 bahasa (BM, EN, 中文, தமிழ்)','Dark/Light/Breeze/Candy theme'] },
-          { num:'FASA 2 · 1–3 BULAN', title:'Notifikasi & Pangkalan Data Proper', cost:'RM 60–150 / bulan', items:['Supabase PostgreSQL database (dah buat!)','WhatsApp notifikasi automatik bila parsel tiba','Email notifikasi sebagai backup','Push notification (PWA) — percuma via FCM','Login pemilik dengan OTP (emel/SMS)','Dashboard admin dengan graf & statistik'] },
-          { num:'FASA 3 · 3–6 BULAN', title:'Pengalaman Pengguna & Keselamatan', cost:'RM 150–300 / bulan', items:['Mobile app (React Native / Flutter) atau PWA install','QR code scan untuk ambil parsel — auto mark done','History parsel dengan carian & filter','Multi-condo support (satu sistem untuk beberapa bangunan)','Role-based access (guard, admin, supervisor)','Backup automatik & log audit trail'] },
-          { num:'FASA 4 · 6–12 BULAN', title:'Skala Penuh & Komersialisasi', cost:'RM 300–700 / bulan', items:['Integrasi dengan sistem e-commerce (Shopee, Lazada)','Auto-detect unit dari tracking number kurier','Analytics dashboard — trend parsel, peak hours','SaaS model — jual sistem ke kondominium lain','API untuk integrasi dengan sistem pengurusan condo','Laporan bulanan automatik untuk pengurusan'] },
-        ]
+        parcel: {
+          tab: '📦 Sistem Parsel',
+          phases_title: 'FASA PEMBANGUNAN',
+          cost_title: 'ANGGARAN KOS (BULANAN)',
+          tech_title: 'TEKNOLOGI DICADANGKAN',
+          tech_backend: 'Backend & Database',
+          tech_notif: 'Notifikasi',
+          tech_frontend: 'Frontend / Mobile',
+          tags_backend: ['Node.js','Express','PostgreSQL','Supabase','Firebase'],
+          tags_notif: ['WhatsApp Cloud API','Twilio SMS','FCM Push','NodeMailer'],
+          tags_frontend: ['React / Next.js','React Native','PWA'],
+          note_title: 'NOTA PENTING',
+          note: '⚠️ <strong>Kos bergantung kepada jumlah pengguna dan mesej.</strong> WhatsApp API sahaja boleh mencecah RM 50–150/bulan untuk 475 unit. Pilihan lebih murah ialah <strong>email + push notification</strong> dulu sebelum beralih ke WhatsApp API.',
+          costs: [['WhatsApp Business API','RM 0.08–0.12 / mesej'],['SMS Gateway','RM 0.05–0.10 / SMS'],['VPS Hosting','RM 20–80 / bulan'],['Domain + SSL','RM 40–80 / tahun'],['Supabase (DB + Auth)','RM 0–90 / bulan'],['Push Notifications (FCM)','Percuma'],['Email (Resend/Mailgun)','RM 0–30 / bulan'],['Anggaran minimum (Fasa 2)','RM 60–150 / bulan',true],['Anggaran penuh (Fasa 3–4)','RM 200–500 / bulan',true]],
+          phases: [
+            { num:'FASA 1 · SEKARANG', title:'Sistem Asas (Sedia Ada)', cost:'Percuma', items:['Web app HTML/CSS/JS + Supabase backend','Daftar parsel dengan gambar, unit, kurier','Pemilik semak parsel sendiri via web','Admin urus maklumat pemilik','Support 4 bahasa, 4 tema'] },
+            { num:'FASA 2 · 1–3 BULAN', title:'Notifikasi & Auth', cost:'RM 60–150 / bulan', items:['WhatsApp / email notifikasi automatik bila parsel tiba','Login pemilik dengan OTP','Push notification percuma via FCM','Dashboard admin dengan statistik & graf'] },
+            { num:'FASA 3 · 3–6 BULAN', title:'Pengalaman Pengguna & Keselamatan', cost:'RM 150–300 / bulan', items:['Mobile app atau PWA boleh install','QR code scan untuk ambil parsel — auto mark done','History parsel dengan carian & filter','Role-based access (guard, admin, supervisor)'] },
+            { num:'FASA 4 · 6–12 BULAN', title:'Skala Penuh & Komersialisasi', cost:'RM 300–700 / bulan', items:['Auto-detect unit dari tracking number kurier','Analytics — trend parsel, peak hours','SaaS model untuk kondominium lain','Integrasi sistem pengurusan condo (JMB)'] },
+          ]
+        },
+        visitor: {
+          tab: '🪪 Sistem Pelawat',
+          phases_title: 'FASA PEMBANGUNAN',
+          cost_title: 'ANGGARAN KOS (BULANAN)',
+          tech_title: 'TEKNOLOGI DICADANGKAN',
+          tech_backend: 'Backend & Database',
+          tech_notif: 'Notifikasi & Keselamatan',
+          tech_frontend: 'Frontend / Hardware',
+          tags_backend: ['Supabase','PostgreSQL','Edge Functions','Row Level Security'],
+          tags_notif: ['WhatsApp Cloud API','FCM Push','QR Code Scanner','OTP Auth'],
+          tags_frontend: ['React Native','PWA','IP Camera Integration','Raspberry Pi Gate'],
+          note_title: 'NOTA PENTING',
+          note: '⚠️ <strong>Sistem pelawat memerlukan kerjasama pemilik unit.</strong> Keberkesanan bergantung pada pemilik yang aktif luluskan/tolak dalam masa singkat. Fasa awal — approval manual melalui web sudah mencukupi sebelum tambah notifikasi automatik.',
+          costs: [['WhatsApp notifikasi kelulusan','RM 0.08–0.12 / mesej'],['Kamera IP lobby','RM 150–500 (sekali)'],['QR Scanner hardware','RM 80–300 (sekali)'],['Gate/barrier integration','RM 500–2000 (sekali)'],['Supabase realtime','RM 0–25 / bulan'],['Push notification (FCM)','Percuma'],['Anggaran digital sahaja (Fasa 2)','RM 20–60 / bulan',true],['Anggaran dengan hardware (Fasa 3)','RM 800–3000 (sekali) + RM 30–80 / bulan',true]],
+          phases: [
+            { num:'FASA 1 · SEKARANG', title:'Sistem Asas (Sedia Ada)', cost:'Percuma', items:['Daftar pelawat dengan nama, IC, telefon, tujuan','Jana QR code + kod rujukan (KES + 6 chars)','Pemilik unit lulus/tolak melalui web','Guard check in / check out pelawat yang diluluskan','Admin pantau semua rekod pelawat'] },
+            { num:'FASA 2 · 1–3 BULAN', title:'Notifikasi & Kelulusan Automatik', cost:'RM 20–60 / bulan', items:['WhatsApp / push notifikasi ke pemilik bila ada pelawat baru','Pemilik lulus terus dari notifikasi WhatsApp','Auto-reject pelawat yang tidak dilulus dalam tempoh masa','QR code scan di pintu masuk (pakai kamera telefon guard)','Log lengkap dengan timestamp masuk & keluar'] },
+            { num:'FASA 3 · 3–6 BULAN', title:'Hardware & Keselamatan Fizikal', cost:'RM 800–3000 sekali + RM 30–80 / bulan', items:['QR scanner hardware di lobby','Kamera IP rakam semua orang masuk','Integrasi dengan barrier/gate automatik','Blacklist pelawat bermasalah','Notifikasi kepada guard dan pemilik serentak'] },
+            { num:'FASA 4 · 6–12 BULAN', title:'AI & Automasi Penuh', cost:'RM 200–500 / bulan', items:['Face recognition untuk penghuni tetap','Visitor pre-register sebelum tiba (owner invite link)','Analytics — pola lawatan, frequent visitors','Integrasi dengan sistem keselamatan bangunan','Laporan bulanan untuk pengurusan JMB'] },
+          ]
+        }
       },
       en: {
-        phases_title: 'DEVELOPMENT PHASES',
-        cost_title: 'COST ESTIMATE (MONTHLY)',
-        tech_title: 'RECOMMENDED TECHNOLOGIES',
-        tech_backend: 'Backend & Database',
-        tech_notif: 'Notifications',
-        tech_frontend: 'Frontend / Mobile',
-        note_title: 'IMPORTANT NOTE',
-        note: '⚠️ <strong>Costs depend on number of users and messages.</strong> For a condo with 625 units — assuming 1–3 notifications/day — WhatsApp API alone could reach RM 50–150/month. A cheaper option is <strong>WhatsApp Business (manual)</strong> or use <strong>email + push notifications</strong> first before switching to SMS/WhatsApp API.',
-        costs: [
-          ['WhatsApp Business API (Meta)', 'RM 0.08–0.12 / msg'],
-          ['SMS Gateway (Nexmo/Twilio)', 'RM 0.05–0.10 / SMS'],
-          ['VPS Hosting (DigitalOcean/Vultr)', 'RM 20–80 / month'],
-          ['Domain + SSL', 'RM 40–80 / year'],
-          ['Firebase / Supabase (DB + Auth)', 'RM 0–90 / month'],
-          ['Push Notifications (FCM)', 'Free'],
-          ['Email (SendGrid / Mailgun)', 'RM 0–30 / month'],
-          ['Minimum estimate (Phase 2)', 'RM 60–150 / month', true],
-          ['Full estimate (Phase 3–4)', 'RM 200–500 / month', true],
-        ],
-        phases: [
-          { num:'PHASE 1 · NOW', title:'Core System (Current)', cost:'Free', items:['HTML/CSS/JS web app + Supabase backend','Register parcels with photo, unit, courier','Owners check their own parcels via web','Admin manages owner information','Supports 4 languages (BM, EN, 中文, தமிழ்)','Dark/Light/Breeze/Candy themes'] },
-          { num:'PHASE 2 · 1–3 MONTHS', title:'Notifications & Proper Database', cost:'RM 60–150 / month', items:['Supabase PostgreSQL database (done!)','Automatic WhatsApp notification when parcel arrives','Email notification as backup','Push notification (PWA) — free via FCM','Owner login with OTP (email/SMS)','Admin dashboard with charts & statistics'] },
-          { num:'PHASE 3 · 3–6 MONTHS', title:'User Experience & Security', cost:'RM 150–300 / month', items:['Mobile app (React Native / Flutter) or installable PWA','QR code scan to collect parcel — auto mark done','Parcel history with search & filter','Multi-condo support (one system for multiple buildings)','Role-based access (guard, admin, supervisor)','Automatic backup & audit log trail'] },
-          { num:'PHASE 4 · 6–12 MONTHS', title:'Full Scale & Commercialisation', cost:'RM 300–700 / month', items:['Integration with e-commerce platforms (Shopee, Lazada)','Auto-detect unit from courier tracking number','Analytics dashboard — parcel trends, peak hours','SaaS model — sell system to other condos','API for integration with condo management systems','Automatic monthly reports for management'] },
-        ]
-      },
-      zh: {
-        phases_title: '开发阶段',
-        cost_title: '费用估算（每月）',
-        tech_title: '推荐技术',
-        tech_backend: '后端 & 数据库',
-        tech_notif: '通知',
-        tech_frontend: '前端 / 移动端',
-        note_title: '重要说明',
-        note: '⚠️ <strong>费用取决于用户数量和消息数量。</strong>对于拥有625个单位的公寓——假设每天1–3条通知——仅WhatsApp API每月可能达到RM 50–150。更便宜的选择是先使用<strong>WhatsApp Business（手动）</strong>或<strong>电子邮件+推送通知</strong>，然后再切换到SMS/WhatsApp API。',
-        costs: [
-          ['WhatsApp Business API (Meta)', 'RM 0.08–0.12 / 条'],
-          ['SMS 网关 (Nexmo/Twilio)', 'RM 0.05–0.10 / SMS'],
-          ['VPS 托管 (DigitalOcean/Vultr)', 'RM 20–80 / 月'],
-          ['域名 + SSL', 'RM 40–80 / 年'],
-          ['Firebase / Supabase (DB + Auth)', 'RM 0–90 / 月'],
-          ['推送通知 (FCM)', '免费'],
-          ['电子邮件 (SendGrid / Mailgun)', 'RM 0–30 / 月'],
-          ['最低估算（阶段2）', 'RM 60–150 / 月', true],
-          ['完整估算（阶段3–4）', 'RM 200–500 / 月', true],
-        ],
-        phases: [
-          { num:'阶段1 · 当前', title:'核心系统（现有）', cost:'免费', items:['HTML/CSS/JS 网页应用 + Supabase 后端','登记带照片、单位、快递的包裹','业主通过网页自行查看包裹','管理员管理业主信息','支持4种语言（马来语、英语、中文、泰米尔语）','深色/浅色/清风/糖果主题'] },
-          { num:'阶段2 · 1–3个月', title:'通知 & 正式数据库', cost:'RM 60–150 / 月', items:['Supabase PostgreSQL 数据库（已完成！）','包裹到达时自动发送WhatsApp通知','电子邮件通知作为备份','推送通知（PWA）— 通过FCM免费','业主通过OTP登录（电子邮件/SMS）','带图表和统计的管理员仪表板'] },
-          { num:'阶段3 · 3–6个月', title:'用户体验 & 安全性', cost:'RM 150–300 / 月', items:['移动应用（React Native / Flutter）或可安装PWA','扫描QR码取包裹 — 自动标记完成','带搜索和过滤的包裹历史','多公寓支持（多栋楼使用同一系统）','基于角色的访问控制（保安、管理员、主管）','自动备份和审计日志'] },
-          { num:'阶段4 · 6–12个月', title:'全面扩展 & 商业化', cost:'RM 300–700 / 月', items:['与电商平台集成（Shopee、Lazada）','从快递追踪号自动识别单位','分析仪表板 — 包裹趋势、高峰时段','SaaS模式 — 向其他公寓销售系统','与公寓管理系统集成的API','为管理层自动生成月度报告'] },
-        ]
-      },
-      ta: {
-        phases_title: 'வளர்ச்சி கட்டங்கள்',
-        cost_title: 'செலவு மதிப்பீடு (மாதாந்திர)',
-        tech_title: 'பரிந்துரைக்கப்பட்ட தொழில்நுட்பங்கள்',
-        tech_backend: 'பின்தள & தரவுத்தளம்',
-        tech_notif: 'அறிவிப்புகள்',
-        tech_frontend: 'முன்தள / மொபைல்',
-        note_title: 'முக்கிய குறிப்பு',
-        note: '⚠️ <strong>செலவு பயனர்கள் மற்றும் செய்திகளின் எண்ணிக்கையைப் பொறுத்தது.</strong> 625 யூனிட் கொண்ட அபார்ட்மென்டுக்கு — தினமும் 1–3 அறிவிப்புகள் என்று வைத்துக்கொண்டால் — WhatsApp API மட்டும் மாதம் RM 50–150 ஆகலாம். மலிவான விருப்பம் முதலில் <strong>WhatsApp Business (கைமுறை)</strong> அல்லது <strong>மின்னஞ்சல் + புஷ் அறிவிப்புகளை</strong> பயன்படுத்துவது.',
-        costs: [
-          ['WhatsApp Business API (Meta)', 'RM 0.08–0.12 / செய்தி'],
-          ['SMS நுழைவாயில் (Nexmo/Twilio)', 'RM 0.05–0.10 / SMS'],
-          ['VPS ஹோஸ்டிங் (DigitalOcean/Vultr)', 'RM 20–80 / மாதம்'],
-          ['டொமைன் + SSL', 'RM 40–80 / ஆண்டு'],
-          ['Firebase / Supabase (DB + Auth)', 'RM 0–90 / மாதம்'],
-          ['புஷ் அறிவிப்புகள் (FCM)', 'இலவசம்'],
-          ['மின்னஞ்சல் (SendGrid / Mailgun)', 'RM 0–30 / மாதம்'],
-          ['குறைந்தபட்ச மதிப்பீடு (கட்டம் 2)', 'RM 60–150 / மாதம்', true],
-          ['முழு மதிப்பீடு (கட்டம் 3–4)', 'RM 200–500 / மாதம்', true],
-        ],
-        phases: [
-          { num:'கட்டம் 1 · இப்போது', title:'அடிப்படை அமைப்பு (தற்போதையது)', cost:'இலவசம்', items:['HTML/CSS/JS வலை பயன்பாடு + Supabase','புகைப்படம், யூனிட், கூரியர் உடன் பார்சல் பதிவு','உரிமையாளர்கள் தாமே வலை மூலம் சரிபார்க்கலாம்','நிர்வாகி உரிமையாளர் தகவல்களை நிர்வகிக்கிறார்','4 மொழிகள் ஆதரவு (BM, EN, 中文, தமிழ்)','Dark/Light/Breeze/Candy தீம்கள்'] },
-          { num:'கட்டம் 2 · 1–3 மாதங்கள்', title:'அறிவிப்புகள் & சரியான தரவுத்தளம்', cost:'RM 60–150 / மாதம்', items:['Supabase PostgreSQL தரவுத்தளம் (முடிந்தது!)','பார்சல் வந்தவுடன் தானாக WhatsApp அறிவிப்பு','மின்னஞ்சல் அறிவிப்பு காப்புப் பிரதியாக','புஷ் அறிவிப்பு (PWA) — FCM மூலம் இலவசம்','OTP மூலம் உரிமையாளர் உள்நுழைவு','விளக்கப்படங்கள் & புள்ளிவிவரங்களுடன் நிர்வாக டாஷ்போர்டு'] },
-          { num:'கட்டம் 3 · 3–6 மாதங்கள்', title:'பயனர் அனுபவம் & பாதுகாப்பு', cost:'RM 150–300 / மாதம்', items:['மொபைல் பயன்பாடு அல்லது நிறுவக்கூடிய PWA','QR குறியீடு ஸ்கேன் செய்து பார்சல் எடுக்கவும்','தேடல் & வடிப்பானுடன் பார்சல் வரலாறு','பல அபார்ட்மென்ட் ஆதரவு','பங்கு அடிப்படையிலான அணுகல் கட்டுப்பாடு','தானியங்கி காப்புப்பிரதி & தணிக்கை பதிவு'] },
-          { num:'கட்டம் 4 · 6–12 மாதங்கள்', title:'முழு விரிவாக்கம் & வணிகமயமாக்கல்', cost:'RM 300–700 / மாதம்', items:['இ-காமர்ஸ் தளங்களுடன் ஒருங்கிணைப்பு (Shopee, Lazada)','கூரியர் டிராக்கிங் எண்ணிலிருந்து யூனிட் தானாக கண்டறிதல்','பகுப்பாய்வு டாஷ்போர்டு — பார்சல் போக்குகள்','SaaS மாதிரி — பிற அபார்ட்மென்டுகளுக்கு விற்பனை','கட்டிட மேலாண்மை அமைப்புகளுடன் API ஒருங்கிணைப்பு','நிர்வாகத்திற்கான தானியங்கி மாதாந்திர அறிக்கைகள்'] },
-        ]
+        parcel: {
+          tab: '📦 Parcel System',
+          phases_title: 'DEVELOPMENT PHASES',
+          cost_title: 'COST ESTIMATE (MONTHLY)',
+          tech_title: 'RECOMMENDED TECHNOLOGIES',
+          tech_backend: 'Backend & Database',
+          tech_notif: 'Notifications',
+          tech_frontend: 'Frontend / Mobile',
+          tags_backend: ['Node.js','Express','PostgreSQL','Supabase','Firebase'],
+          tags_notif: ['WhatsApp Cloud API','Twilio SMS','FCM Push','NodeMailer'],
+          tags_frontend: ['React / Next.js','React Native','PWA'],
+          note_title: 'IMPORTANT NOTE',
+          note: '⚠️ <strong>Costs depend on number of users and messages.</strong> WhatsApp API alone could reach RM 50–150/month for 475 units. A cheaper option is <strong>email + push notifications</strong> first before switching to WhatsApp API.',
+          costs: [['WhatsApp Business API','RM 0.08–0.12 / msg'],['SMS Gateway','RM 0.05–0.10 / SMS'],['VPS Hosting','RM 20–80 / month'],['Domain + SSL','RM 40–80 / year'],['Supabase (DB + Auth)','RM 0–90 / month'],['Push Notifications (FCM)','Free'],['Email (Resend/Mailgun)','RM 0–30 / month'],['Minimum estimate (Phase 2)','RM 60–150 / month',true],['Full estimate (Phase 3–4)','RM 200–500 / month',true]],
+          phases: [
+            { num:'PHASE 1 · NOW', title:'Core System (Current)', cost:'Free', items:['HTML/CSS/JS web app + Supabase backend','Register parcels with photo, unit, courier','Owners check parcels via web','Admin manages owner information','4 languages, 4 themes'] },
+            { num:'PHASE 2 · 1–3 MONTHS', title:'Notifications & Auth', cost:'RM 60–150 / month', items:['Automatic WhatsApp/email notification on parcel arrival','Owner login with OTP','Free push notifications via FCM','Admin dashboard with stats & charts'] },
+            { num:'PHASE 3 · 3–6 MONTHS', title:'UX & Security', cost:'RM 150–300 / month', items:['Mobile app or installable PWA','QR code scan to collect — auto mark done','Parcel history with search & filter','Role-based access (guard, admin, supervisor)'] },
+            { num:'PHASE 4 · 6–12 MONTHS', title:'Full Scale & Commercialisation', cost:'RM 300–700 / month', items:['Auto-detect unit from courier tracking number','Analytics — parcel trends, peak hours','SaaS model for other condos','Condo management system integration'] },
+          ]
+        },
+        visitor: {
+          tab: '🪪 Visitor System',
+          phases_title: 'DEVELOPMENT PHASES',
+          cost_title: 'COST ESTIMATE (MONTHLY)',
+          tech_title: 'RECOMMENDED TECHNOLOGIES',
+          tech_backend: 'Backend & Database',
+          tech_notif: 'Notifications & Security',
+          tech_frontend: 'Frontend / Hardware',
+          tags_backend: ['Supabase','PostgreSQL','Edge Functions','Row Level Security'],
+          tags_notif: ['WhatsApp Cloud API','FCM Push','QR Code Scanner','OTP Auth'],
+          tags_frontend: ['React Native','PWA','IP Camera Integration','Raspberry Pi Gate'],
+          note_title: 'IMPORTANT NOTE',
+          note: '⚠️ <strong>The visitor system depends on active unit owners.</strong> Effectiveness relies on owners approving/rejecting in a timely manner. For Phase 1 — manual web-based approval is sufficient before adding automatic notifications.',
+          costs: [['WhatsApp approval notification','RM 0.08–0.12 / msg'],['Lobby IP camera','RM 150–500 (one-time)'],['QR scanner hardware','RM 80–300 (one-time)'],['Gate/barrier integration','RM 500–2000 (one-time)'],['Supabase realtime','RM 0–25 / month'],['Push notifications (FCM)','Free'],['Digital only estimate (Phase 2)','RM 20–60 / month',true],['With hardware (Phase 3)','RM 800–3000 (one-time) + RM 30–80 / month',true]],
+          phases: [
+            { num:'PHASE 1 · NOW', title:'Core System (Current)', cost:'Free', items:['Register visitor with name, IC, phone, purpose','Generate QR code + reference code (KES + 6 chars)','Unit owner approves/rejects via web','Guard check in / check out approved visitors','Admin monitors all visitor records'] },
+            { num:'PHASE 2 · 1–3 MONTHS', title:'Notifications & Auto-Approval', cost:'RM 20–60 / month', items:['WhatsApp/push notification to owner on new visitor','Owner approves directly from WhatsApp notification','Auto-reject visitors not approved within time limit','QR code scan at entrance (guard phone camera)','Full log with check-in & check-out timestamps'] },
+            { num:'PHASE 3 · 3–6 MONTHS', title:'Hardware & Physical Security', cost:'RM 800–3000 one-time + RM 30–80 / month', items:['QR scanner hardware in lobby','IP camera records all entrants','Integration with automatic barrier/gate','Blacklist problematic visitors','Simultaneous notifications to guard and owner'] },
+            { num:'PHASE 4 · 6–12 MONTHS', title:'AI & Full Automation', cost:'RM 200–500 / month', items:['Face recognition for regular residents','Pre-register visitors (owner invite link)','Analytics — visit patterns, frequent visitors','Integration with building security systems','Monthly reports for JMB management'] },
+          ]
+        }
       }
     }
 
-    const lang = getLang()
-    const c = content[lang] || content.ms
+    let currentPlan = 'parcel'
 
-    document.getElementById('txt-phases-title').textContent = c.phases_title
-    document.getElementById('txt-cost-title').textContent = c.cost_title
-    document.getElementById('txt-tech-title').textContent = c.tech_title
-    document.getElementById('txt-tech-backend').textContent = c.tech_backend
-    document.getElementById('txt-tech-notif').textContent = c.tech_notif
-    document.getElementById('txt-tech-frontend').textContent = c.tech_frontend
-    document.getElementById('txt-note-title').textContent = c.note_title
-    document.getElementById('txt-note').innerHTML = c.note
+    function getLangPlan() {
+      const l = getLang()
+      return plans[l] || plans.en
+    }
 
-    // Render cost table
-    const costTable = document.getElementById('costTable')
-    costTable.innerHTML = c.costs.map(([label, val, highlight]) =>
-      `<tr${highlight ? ' style="background:var(--accent-dim)"' : ''}>
-        <td class="cost-label"${highlight ? ' style="font-weight:700;color:var(--text)"' : ''}>${label}</td>
-        <td class="cost-val"${highlight ? ' style="font-size:14px"' : ''}>${val}</td>
-      </tr>`
-    ).join('')
+    function switchPlan(type) {
+      currentPlan = type
+      document.getElementById('plan-tab-parcel').classList.toggle('active', type === 'parcel')
+      document.getElementById('plan-tab-visitor').classList.toggle('active', type === 'visitor')
+      renderPlan()
+    }
 
-    // Render phases
-    const container = document.getElementById('phasesContainer')
-    c.phases.forEach((p, i) => {
-      container.innerHTML += `
-        <div class="phase-card animate-in" style="animation-delay:${i*0.06}s">
+    function renderPlan() {
+      const lp = getLangPlan()
+      const d = lp[currentPlan] || getLangPlan()['parcel']
+
+      document.getElementById('txt-phases-title').textContent = d.phases_title
+      document.getElementById('txt-cost-title').textContent = d.cost_title
+      document.getElementById('txt-tech-title').textContent = d.tech_title
+      document.getElementById('txt-tech-backend').textContent = d.tech_backend
+      document.getElementById('txt-tech-notif').textContent = d.tech_notif
+      document.getElementById('txt-tech-frontend').textContent = d.tech_frontend
+      document.getElementById('txt-note-title').textContent = d.note_title
+      document.getElementById('txt-note').innerHTML = d.note
+
+      const tag = t => `<span class="tag">${t}</span>`
+      document.getElementById('tags-backend').innerHTML = d.tags_backend.map(tag).join('')
+      document.getElementById('tags-notif').innerHTML = d.tags_notif.map(tag).join('')
+      document.getElementById('tags-frontend').innerHTML = d.tags_frontend.map(tag).join('')
+
+      document.getElementById('costTable').innerHTML = d.costs.map(([label, val, hi]) =>
+        `<tr${hi ? ' style="background:var(--accent-dim)"' : ''}>
+          <td class="cost-label"${hi ? ' style="font-weight:700;color:var(--text)"' : ''}>${label}</td>
+          <td class="cost-val"${hi ? ' style="font-size:14px"' : ''}>${val}</td>
+        </tr>`
+      ).join('')
+
+      const pc = document.getElementById('phasesContainer')
+      pc.innerHTML = ''
+      d.phases.forEach((p, i) => {
+        pc.innerHTML += `<div class="phase-card animate-in" style="animation-delay:${i*0.06}s">
           <div class="phase-num">${p.num}</div>
           <div class="phase-title">${p.title}</div>
           <div class="phase-cost">💰 ${p.cost}</div>
           <ul class="phase-items">${p.items.map(item => `<li>${item}</li>`).join('')}</ul>
         </div>`
-    })
+      })
+    }
+
+    // Set tab labels
+    const lp = getLangPlan()
+    document.getElementById('plan-tab-parcel').textContent = lp.parcel.tab
+    document.getElementById('plan-tab-visitor').textContent = lp.visitor.tab
+
+    renderPlan()
   </script>
 </body>
 </html>
