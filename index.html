@@ -102,15 +102,15 @@
         <div class="sys-line"></div>
       </div>
       <div class="sub-links sub-links-2">
-        <a href="visitor-register.html" class="sub-card sub-card-lg">
-          <span class="sub-icon">🪪</span>
+        <a href="visitor-register.html" class="sub-card sub-card-lg" style="align-items:flex-start">
+          <span class="sub-icon" style="margin-top:2px">🪪</span>
           <div>
             <div class="sub-name" id="txt-vis-reg-name"></div>
             <div class="sub-desc" id="txt-vis-reg-desc"></div>
           </div>
         </a>
-        <a href="visitor-check.html" class="sub-card sub-card-lg">
-          <span class="sub-icon">🔍</span>
+        <a href="visitor-check.html" class="sub-card sub-card-lg" style="align-items:flex-start">
+          <span class="sub-icon" style="margin-top:2px">🔍</span>
           <div>
             <div class="sub-name" id="txt-vis-chk-name"></div>
             <div class="sub-desc" id="txt-vis-chk-desc"></div>
@@ -119,7 +119,7 @@
       </div>
     </div>
 
-    <!-- 3. RESIDENTIAL — 3 cards: Guard, Owner, Admin (icon + name only) -->
+    <!-- 3. RESIDENTIAL — 3 cards: Guard, Owner, Admin (icon only) -->
     <div class="sys-block" style="animation-delay:0.26s">
       <div class="sys-label-row">
         <div class="sys-line"></div>
@@ -129,7 +129,6 @@
       <div class="sub-links sub-links-3">
         <a href="guard.html" class="sub-card sub-card-icon">
           <span class="sub-icon">🛡️</span>
-          <span id="txt-guard-name"></span>
         </a>
         <a href="owner.html" class="sub-card sub-card-icon">
           <span class="sub-icon">🏠</span>
@@ -170,8 +169,8 @@
     document.getElementById('txt-subtitle').textContent     = t('index_subtitle')
 
     document.getElementById('txt-parcel-tag').textContent   = t('sys_parcel')
-    document.getElementById('txt-parcel-name').textContent  = t('sys_parcel')
-    document.getElementById('txt-parcel-desc').textContent  = t('sys_parcel_desc')
+    document.getElementById('txt-parcel-name').textContent  = t('card_dispatcher')
+    document.getElementById('txt-parcel-desc').textContent  = t('card_dispatcher_desc')
 
     document.getElementById('txt-visitor-tag').textContent  = t('sys_visitor')
     document.getElementById('txt-vis-reg-name').textContent = t('vis_register_title')
@@ -180,7 +179,6 @@
     document.getElementById('txt-vis-chk-desc').textContent = t('vis_check_desc')
 
     document.getElementById('txt-res-tag').textContent      = t('res_tag')
-    document.getElementById('txt-guard-name').textContent   = t('guard_title')
     document.getElementById('txt-owner-name').textContent   = t('card_owner')
     document.getElementById('txt-admin-name').textContent   = t('card_admin')
 
