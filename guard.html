@@ -10,24 +10,21 @@
   <style>
     .vis-card { background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:14px 16px; margin-bottom:10px; }
     .vis-name { font-family:var(--heading-font); font-size:15px; font-weight:700; margin-bottom:3px; }
-    .vis-meta { font-size:12px; color:var(--text-muted); margin-bottom:10px; font-family:'JetBrains Mono',monospace; }
-    .vis-actions { display:flex; gap:8px; flex-wrap:wrap; }
-    .btn-sm { padding:6px 14px; border-radius:6px; font-size:12px; font-weight:600; cursor:pointer; border:none; font-family:var(--body-font); transition:all 0.2s; }
-    .btn-approve { background:var(--green); color:#fff; }
-    .btn-approve:hover { opacity:0.85; }
-    .btn-reject { background:var(--red); color:#fff; }
-    .btn-reject:hover { opacity:0.85; }
-    .btn-checkin { background:rgba(99,179,237,0.2); color:#63b3ed; border:1px solid rgba(99,179,237,0.3); }
+    .vis-meta { font-size:11px; color:var(--text-muted); margin-bottom:8px; font-family:'JetBrains Mono',monospace; }
+    .btn-sm { padding:7px 16px; border-radius:7px; font-size:12px; font-weight:600; cursor:pointer; border:none; font-family:var(--body-font); transition:all 0.2s; }
+    .btn-checkin { background:rgba(99,179,237,0.18); color:#63b3ed; border:1px solid rgba(99,179,237,0.3); }
+    .btn-checkin:hover { background:rgba(99,179,237,0.28); }
     .btn-checkout { background:var(--surface3); color:var(--text-muted); border:1px solid var(--border2); }
-    .tab-bar { display:flex; gap:6px; margin-bottom:16px; background:var(--surface2); border-radius:10px; padding:4px; }
-    .tab { flex:1; text-align:center; padding:8px; border-radius:7px; font-size:12px; font-weight:600; cursor:pointer; transition:all 0.2s; color:var(--text-muted); }
+    .btn-checkout:hover { background:var(--surface); }
+    .pending-note { display:inline-flex; align-items:center; gap:6px; font-size:11px; color:var(--text-muted); background:var(--surface3); padding:5px 10px; border-radius:6px; border:1px solid var(--border); }
+    .tab-bar { display:flex; gap:6px; margin-bottom:14px; background:var(--surface2); border-radius:10px; padding:4px; }
+    .tab { flex:1; text-align:center; padding:8px; border-radius:7px; font-size:12px; font-weight:700; cursor:pointer; transition:all 0.2s; color:var(--text-muted); }
     .tab.active { background:var(--surface); color:var(--text); box-shadow:0 1px 4px rgba(0,0,0,0.15); }
   </style>
 </head>
 <body>
   <nav class="nav" id="mainNav"></nav>
 
-  <!-- PIN GATE -->
   <div id="pinGate" style="display:flex;align-items:center;justify-content:center;min-height:calc(100vh - 57px)">
     <div style="width:100%;max-width:340px;padding:20px">
       <div class="section animate-in">
@@ -43,7 +40,6 @@
     </div>
   </div>
 
-  <!-- DASHBOARD -->
   <div id="dashboard" style="display:none">
     <main class="main">
       <div class="page-header animate-in">
@@ -53,32 +49,36 @@
       </div>
 
       <!-- Stats -->
-      <div class="section animate-in" style="display:flex;gap:0;padding:0;overflow:hidden;margin-bottom:14px">
-        <div style="flex:1;padding:14px;text-align:center;border-right:1px solid var(--border)">
-          <div id="statPending" class="num" style="font-size:22px;color:var(--accent)">—</div>
-          <div style="font-size:10px;color:var(--text-muted);margin-top:2px" id="txt-stat-pending"></div>
-        </div>
+      <div class="section animate-in" style="display:flex;gap:0;padding:0;overflow:hidden;margin-bottom:14px;animation-delay:0.05s">
         <div style="flex:1;padding:14px;text-align:center;border-right:1px solid var(--border)">
           <div id="statApproved" class="num" style="font-size:22px;color:var(--green)">—</div>
           <div style="font-size:10px;color:var(--text-muted);margin-top:2px" id="txt-stat-approved"></div>
         </div>
-        <div style="flex:1;padding:14px;text-align:center">
+        <div style="flex:1;padding:14px;text-align:center;border-right:1px solid var(--border)">
           <div id="statIn" class="num" style="font-size:22px;color:#63b3ed">—</div>
           <div style="font-size:10px;color:var(--text-muted);margin-top:2px" id="txt-stat-in"></div>
         </div>
+        <div style="flex:1;padding:14px;text-align:center">
+          <div id="statOut" class="num" style="font-size:22px;color:var(--text-muted)">—</div>
+          <div style="font-size:10px;color:var(--text-muted);margin-top:2px" id="txt-stat-out"></div>
+        </div>
+      </div>
+
+      <!-- Note about pending -->
+      <div class="pending-note animate-in" style="margin-bottom:14px;animation-delay:0.08s">
+        ℹ️ <span id="txt-pending-note"></span>
       </div>
 
       <!-- Search -->
-      <div style="margin-bottom:12px" class="animate-in">
-        <input id="searchInput" oninput="applyFilter()" style="text-transform:uppercase;font-family:'JetBrains Mono',monospace">
+      <div style="margin-bottom:12px" class="animate-in" style="animation-delay:0.1s">
+        <input id="searchInput" oninput="applyFilter()">
       </div>
 
       <!-- Tabs -->
       <div class="tab-bar animate-in">
-        <div class="tab active" onclick="switchTab('all')" id="tab-all"></div>
-        <div class="tab" onclick="switchTab('Pending')" id="tab-pending"></div>
-        <div class="tab" onclick="switchTab('Approved')" id="tab-approved"></div>
+        <div class="tab active" onclick="switchTab('Approved')" id="tab-approved"></div>
         <div class="tab" onclick="switchTab('Checked In')" id="tab-checkedin"></div>
+        <div class="tab" onclick="switchTab('all')" id="tab-all"></div>
       </div>
 
       <div id="visList"></div>
@@ -98,16 +98,16 @@
     document.getElementById('txt-enter-btn').textContent = t('enter')
     document.getElementById('txt-title').textContent = t('guard_title')
     document.getElementById('txt-subtitle').textContent = t('guard_subtitle')
-    document.getElementById('txt-stat-pending').textContent = t('vis_status_pending')
     document.getElementById('txt-stat-approved').textContent = t('vis_status_approved')
     document.getElementById('txt-stat-in').textContent = t('vis_status_checkedin')
+    document.getElementById('txt-stat-out').textContent = t('guard_checkout')
+    document.getElementById('txt-pending-note').textContent = t('guard_pending_note')
     document.getElementById('searchInput').placeholder = t('guard_search')
-    document.getElementById('tab-all').textContent = t('guard_tab_all')
-    document.getElementById('tab-pending').textContent = t('vis_status_pending')
     document.getElementById('tab-approved').textContent = t('vis_status_approved')
     document.getElementById('tab-checkedin').textContent = t('vis_status_checkedin')
+    document.getElementById('tab-all').textContent = t('guard_tab_all')
 
-    let allVisitors = [], currentTab = 'all'
+    let allVisitors = [], currentTab = 'Approved'
 
     function showToast(msg, type='') {
       const el = document.getElementById('toast')
@@ -116,8 +116,9 @@
     }
 
     function unlockGuard() {
-      const pin = document.getElementById('guardPin').value
-      if (pin !== '9999') { document.getElementById('pinError').textContent = t('admin_pin_error'); return }
+      if (document.getElementById('guardPin').value !== '9999') {
+        document.getElementById('pinError').textContent = t('admin_pin_error'); return
+      }
       document.getElementById('pinGate').style.display = 'none'
       document.getElementById('dashboard').style.display = 'block'
       loadVisitors()
@@ -131,34 +132,36 @@
     async function loadVisitors() {
       try {
         allVisitors = await apiGetVisitors()
-        document.getElementById('statPending').textContent = allVisitors.filter(v=>v.status==='Pending').length
         document.getElementById('statApproved').textContent = allVisitors.filter(v=>v.status==='Approved').length
         document.getElementById('statIn').textContent = allVisitors.filter(v=>v.status==='Checked In').length
+        document.getElementById('statOut').textContent = allVisitors.filter(v=>v.status==='Checked Out').length
         applyFilter()
       } catch(e) { showToast(t('error_server'),'error-toast') }
     }
 
     function switchTab(tab) {
       currentTab = tab
-      document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'))
-      document.getElementById('tab-'+(tab==='all'?'all':tab==='Pending'?'pending':tab==='Approved'?'approved':'checkedin')).classList.add('active')
+      document.getElementById('tab-approved').classList.toggle('active', tab==='Approved')
+      document.getElementById('tab-checkedin').classList.toggle('active', tab==='Checked In')
+      document.getElementById('tab-all').classList.toggle('active', tab==='all')
       applyFilter()
     }
 
     function applyFilter() {
       const search = document.getElementById('searchInput').value.toUpperCase()
-      let list = allVisitors
-      if (currentTab !== 'all') list = list.filter(v => v.status === currentTab)
+      let list = currentTab === 'all' ? allVisitors : allVisitors.filter(v=>v.status===currentTab)
       if (search) list = list.filter(v => v.ref_code.includes(search) || v.name.toUpperCase().includes(search) || v.unit.includes(search))
       renderList(list)
     }
 
     function renderList(list) {
       const el = document.getElementById('visList')
-      if (!list.length) { el.innerHTML = '<div class="empty"><div class="empty-icon">🪪</div><p>'+t('vis_empty')+'</p></div>'; return }
-
-      const statusKey = { Pending:'vis_status_pending', Approved:'vis_status_approved', Rejected:'vis_status_rejected', 'Checked In':'vis_status_checkedin' }
-      const statusBadge = { Pending:'badge-pending', Approved:'badge-done', Rejected:'badge-urgent', 'Checked In':'badge-done' }
+      if (!list.length) {
+        el.innerHTML = '<div class="empty"><div class="empty-icon">🛡️</div><p>' + t('vis_empty') + '</p></div>'
+        return
+      }
+      const statusBadge = { Pending:'badge-pending', Approved:'badge-done', Rejected:'badge-urgent', 'Checked In':'badge-done', 'Checked Out':'badge-pending' }
+      const statusKey = { Pending:'vis_status_pending', Approved:'vis_status_approved', Rejected:'vis_status_rejected', 'Checked In':'vis_status_checkedin', 'Checked Out':'guard_checkout' }
 
       el.innerHTML = list.map(v => `
         <div class="vis-card animate-in">
@@ -168,17 +171,11 @@
           </div>
           <div class="vis-meta">${v.ref_code} · Unit ${v.unit} · ${fmtDate(v.created_at)}</div>
           <div style="font-size:12px;color:var(--text-muted);margin-bottom:10px">${v.purpose} · ${v.phone}</div>
-          <div class="vis-actions">
-            ${v.status==='Pending' ? `
-              <button class="btn-sm btn-approve" onclick="updateStatus(${v.id},'Approved')">${t('guard_approve')}</button>
-              <button class="btn-sm btn-reject" onclick="updateStatus(${v.id},'Rejected')">${t('guard_reject')}</button>
-            ` : ''}
-            ${v.status==='Approved' ? `
-              <button class="btn-sm btn-checkin" onclick="updateStatus(${v.id},'Checked In')">${t('guard_checkin')}</button>
-            ` : ''}
-            ${v.status==='Checked In' ? `
-              <button class="btn-sm btn-checkout" onclick="updateStatus(${v.id},'Checked Out')">${t('guard_checkout')}</button>
-            ` : ''}
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            ${v.status==='Approved' ? `<button class="btn-sm btn-checkin" onclick="updateStatus(${v.id},'Checked In')">${t('guard_checkin')}</button>` : ''}
+            ${v.status==='Checked In' ? `<button class="btn-sm btn-checkout" onclick="updateStatus(${v.id},'Checked Out')">${t('guard_checkout')}</button>` : ''}
+            ${v.status==='Pending' ? `<span class="pending-note">⏳ ${t('guard_wait_owner')}</span>` : ''}
+            ${v.status==='Rejected' ? `<span class="pending-note">❌ ${t('vis_status_rejected')}</span>` : ''}
           </div>
         </div>`).join('')
     }

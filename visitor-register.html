@@ -8,11 +8,15 @@
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="stylesheet" href="css/style.css">
   <style>
-    .qr-wrap { text-align:center; padding:20px 0 10px; }
-    .qr-wrap canvas { border-radius:12px; border:3px solid var(--accent); padding:10px; background:#fff; }
+    .qr-wrap { text-align:center; padding:16px 0 8px; }
+    #qrCanvas canvas, #qrCanvas img { border-radius:10px; border:3px solid var(--accent); padding:8px; background:#fff; }
     .ref-box { background:var(--accent-dim); border:1px solid rgba(var(--accent-rgb),0.3); border-radius:10px; padding:14px 18px; text-align:center; margin:14px 0; }
     .ref-label { font-size:11px; color:var(--text-muted); margin-bottom:4px; font-weight:600; letter-spacing:1px; text-transform:uppercase; }
     .ref-code { font-family:'JetBrains Mono',monospace; font-size:26px; font-weight:700; color:var(--accent); letter-spacing:4px; }
+    .action-btns { display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin-top:10px; }
+    .btn-action { display:inline-flex; align-items:center; gap:6px; padding:8px 16px; border-radius:8px; font-size:12px; font-weight:600; cursor:pointer; border:1px solid var(--border); background:var(--surface2); color:var(--text); font-family:var(--body-font); transition:all 0.2s; }
+    .btn-action:hover { border-color:rgba(var(--accent-rgb),0.4); color:var(--accent); }
+    .btn-copied { border-color:var(--green)!important; color:var(--green)!important; }
     .success-card { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:24px; text-align:center; }
     .success-icon { font-size:48px; margin-bottom:12px; }
     .success-title { font-family:var(--heading-font); font-size:20px; font-weight:800; margin-bottom:6px; }
@@ -32,7 +36,6 @@
         <h1 class="page-title" id="txt-title"></h1>
         <p class="page-subtitle" id="txt-subtitle"></p>
       </div>
-
       <div class="section animate-in" style="animation-delay:0.05s">
         <div class="section-title" id="txt-sec-visitor"></div>
         <div class="field">
@@ -48,7 +51,6 @@
           <input id="visPhone" type="tel">
         </div>
       </div>
-
       <div class="section animate-in" style="animation-delay:0.08s">
         <div class="section-title" id="txt-sec-unit"></div>
         <div class="field">
@@ -73,7 +75,6 @@
         </div>
         <input type="hidden" id="unit">
       </div>
-
       <div class="section animate-in" style="animation-delay:0.11s">
         <div class="section-title" id="txt-sec-purpose"></div>
         <div class="field">
@@ -90,7 +91,6 @@
           </div>
         </div>
       </div>
-
       <button class="btn btn-gold animate-in" style="animation-delay:0.14s" onclick="registerVisitor()" id="txt-submit"></button>
     </div>
 
@@ -106,8 +106,14 @@
           <div class="ref-code" id="refCode"></div>
         </div>
 
+        <!-- Copy + Download buttons -->
+        <div class="action-btns">
+          <button class="btn-action" id="copyBtn" onclick="copyCode()">📋 <span id="txt-copy-btn"></span></button>
+          <button class="btn-action" onclick="downloadQR()">⬇️ <span id="txt-dl-btn"></span></button>
+        </div>
+
         <div class="qr-wrap">
-          <canvas id="qrCanvas"></canvas>
+          <div id="qrCanvas"></div>
           <p style="font-size:11px;color:var(--text-muted);margin-top:10px" id="txt-qr-hint"></p>
         </div>
 
@@ -122,7 +128,6 @@
   </main>
   <div class="toast" id="toast"></div>
 
-  <!-- QR code library -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <script src="js/i18n.js"></script>
   <script src="js/theme.js"></script>
@@ -130,8 +135,6 @@
   <script src="js/api.js"></script>
   <script>
     renderNav('vis_register_title')
-
-    // i18n
     document.getElementById('txt-title').textContent = t('vis_register_title')
     document.getElementById('txt-subtitle').textContent = t('vis_register_subtitle')
     document.getElementById('txt-sec-visitor').textContent = t('vis_sec_info')
@@ -155,8 +158,9 @@
     document.getElementById('opt-baiki').textContent = t('vis_purpose_repair')
     document.getElementById('opt-lain').textContent = t('vis_purpose_other')
     document.getElementById('txt-submit').textContent = '✓  ' + t('vis_submit')
+    document.getElementById('txt-copy-btn').textContent = t('vis_copy_code')
+    document.getElementById('txt-dl-btn').textContent = t('vis_download_qr')
 
-    // Floor/unit dropdowns
     const FLOORS = Array.from({length:19},(_,i)=>i+4)
     const UNITS = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,'23A',25]
     const floorSel = document.getElementById('floorSelect')
@@ -167,28 +171,23 @@
     })
     function onFloorChange() {
       const floor = floorSel.value
-      const unitField = document.getElementById('unitField')
       const unitSel = document.getElementById('unitSelect')
       document.getElementById('unit').value = ''
       document.getElementById('unitConfirm').style.display = 'none'
-      if (!floor) { unitField.style.display='none'; return }
+      document.getElementById('unitField').style.display = floor ? 'block' : 'none'
+      if (!floor) return
       unitSel.innerHTML = '<option value="">' + t('disp_unitnum_placeholder') + '</option>'
       UNITS.forEach(j => {
         const o = document.createElement('option')
         o.value = floor+'-'+j; o.textContent = t('disp_unitnum_prefix')+' '+j
         unitSel.appendChild(o)
       })
-      unitField.style.display = 'block'
     }
     function onUnitChange() {
       const val = document.getElementById('unitSelect').value
       document.getElementById('unit').value = val
-      if (val) {
-        document.getElementById('unitConfirmVal').textContent = val
-        document.getElementById('unitConfirm').style.display = 'block'
-      } else {
-        document.getElementById('unitConfirm').style.display = 'none'
-      }
+      document.getElementById('unitConfirmVal').textContent = val
+      document.getElementById('unitConfirm').style.display = val ? 'block' : 'none'
     }
 
     function showToast(msg, type='') {
@@ -197,26 +196,44 @@
       setTimeout(() => el.className = 'toast', 2800)
     }
 
+    let currentRef = ''
+
+    function copyCode() {
+      navigator.clipboard.writeText(currentRef).then(() => {
+        const btn = document.getElementById('copyBtn')
+        btn.classList.add('btn-copied')
+        btn.innerHTML = '✓ <span>' + t('vis_copied') + '</span>'
+        setTimeout(() => {
+          btn.classList.remove('btn-copied')
+          btn.innerHTML = '📋 <span>' + t('vis_copy_code') + '</span>'
+        }, 2000)
+      })
+    }
+
+    function downloadQR() {
+      const canvas = document.querySelector('#qrCanvas canvas')
+      if (!canvas) return
+      const link = document.createElement('a')
+      link.download = 'visitor-' + currentRef + '.png'
+      link.href = canvas.toDataURL('image/png')
+      link.click()
+    }
+
     async function registerVisitor() {
       const name = document.getElementById('visName').value.trim()
       const ic = document.getElementById('visIc').value.trim()
       const phone = document.getElementById('visPhone').value.trim()
       const unit = document.getElementById('unit').value
       const purpose = document.getElementById('visPurpose').value
-
-      if (!name||!ic||!phone||!unit||!purpose) {
-        showToast(t('vis_error_fill'), 'error-toast'); return
-      }
+      if (!name||!ic||!phone||!unit||!purpose) { showToast(t('vis_error_fill'),'error-toast'); return }
 
       const btn = document.getElementById('txt-submit')
       btn.textContent = '⏳ ' + t('loading'); btn.disabled = true
-
       try {
         const result = await apiRegisterVisitor({name, ic_no:ic, phone, unit, purpose})
         showSuccess(result, {name, ic, phone, unit, purpose})
       } catch(e) {
-        showToast(t('error_server'), 'error-toast')
-        console.error(e)
+        showToast(t('error_server'), 'error-toast'); console.error(e)
       } finally {
         btn.textContent = '✓  ' + t('vis_submit'); btn.disabled = false
       }
@@ -224,30 +241,23 @@
 
     function showSuccess(visitor, info) {
       document.getElementById('formView').style.display = 'none'
-      const sv = document.getElementById('successView')
-      sv.style.display = 'block'
-
+      document.getElementById('successView').style.display = 'block'
       document.getElementById('txt-success-title').textContent = t('vis_success_title')
       document.getElementById('txt-success-sub').textContent = t('vis_success_sub')
       document.getElementById('txt-ref-label').textContent = t('vis_ref_label')
       document.getElementById('txt-qr-hint').textContent = t('vis_qr_hint')
       document.getElementById('txt-details-label').textContent = t('vis_details')
       document.getElementById('txt-new-reg').textContent = t('vis_new_reg')
+      document.getElementById('txt-copy-btn').textContent = t('vis_copy_code')
+      document.getElementById('txt-dl-btn').textContent = t('vis_download_qr')
 
-      const ref = visitor.ref_code
-      document.getElementById('refCode').textContent = ref
+      currentRef = visitor.ref_code
+      document.getElementById('refCode').textContent = currentRef
 
-      // Generate QR
       const canvas = document.getElementById('qrCanvas')
       canvas.innerHTML = ''
-      new QRCode(canvas, {
-        text: ref,
-        width: 180, height: 180,
-        colorDark: '#000000', colorLight: '#ffffff',
-        correctLevel: QRCode.CorrectLevel.H
-      })
+      new QRCode(canvas, { text: currentRef, width:180, height:180, colorDark:'#000000', colorLight:'#ffffff', correctLevel: QRCode.CorrectLevel.H })
 
-      // Detail rows
       const rows = [
         [t('vis_name'), info.name],
         [t('vis_ic'), info.ic],
@@ -264,15 +274,12 @@
     function resetForm() {
       document.getElementById('successView').style.display = 'none'
       document.getElementById('formView').style.display = 'block'
-      document.getElementById('visName').value = ''
-      document.getElementById('visIc').value = ''
-      document.getElementById('visPhone').value = ''
+      ;['visName','visIc','visPhone','unit'].forEach(id => document.getElementById(id).value = '')
       document.getElementById('visPurpose').value = ''
       document.getElementById('floorSelect').value = ''
-      document.getElementById('unitSelect').innerHTML = ''
       document.getElementById('unitField').style.display = 'none'
       document.getElementById('unitConfirm').style.display = 'none'
-      document.getElementById('unit').value = ''
+      currentRef = ''
     }
   </script>
 </body>

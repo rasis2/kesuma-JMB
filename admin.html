@@ -2,18 +2,28 @@
 <html lang="ms">
 <head>
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin — Kesuma Parcel</title>
-      <link rel="manifest" href="site.webmanifest">
+  <title>Admin — Kesuma JMB</title>
+  <link rel="manifest" href="site.webmanifest">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
-  <link rel="apple-touch-icon" href="favicon.ico">
   <link rel="stylesheet" href="css/style.css">
   <style>
     .badge-urgent { background:rgba(224,92,92,0.15); color:var(--red); border:1px solid rgba(224,92,92,0.3); }
+    .tab-bar { display:flex; gap:6px; margin-bottom:16px; background:var(--surface2); border-radius:10px; padding:4px; }
+    .tab { flex:1; text-align:center; padding:8px; border-radius:7px; font-size:12px; font-weight:700; cursor:pointer; transition:all 0.2s; color:var(--text-muted); }
+    .tab.active { background:var(--surface); color:var(--text); box-shadow:0 1px 4px rgba(0,0,0,0.15); }
+    .vis-row { display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid var(--border); font-size:13px; gap:8px; }
+    .vis-row:last-child { border-bottom:none; }
+    .vis-row-name { font-weight:600; }
+    .vis-row-meta { font-size:11px; color:var(--text-muted); font-family:'JetBrains Mono',monospace; }
+    .btn-sm { padding:5px 12px; border-radius:6px; font-size:11px; font-weight:600; cursor:pointer; border:none; font-family:var(--body-font); transition:all 0.2s; }
+    .btn-approve { background:var(--green); color:#fff; }
+    .btn-reject { background:var(--red); color:#fff; }
   </style>
 </head>
 <body>
   <nav class="nav" id="mainNav"></nav>
+
   <div id="pinGate" style="display:flex;align-items:center;justify-content:center;min-height:calc(100vh - 57px)">
     <div style="width:100%;max-width:360px;padding:20px">
       <div class="section animate-in">
@@ -29,6 +39,7 @@
       </div>
     </div>
   </div>
+
   <div id="dashboard" style="display:none">
     <main class="main">
       <div class="page-header animate-in">
@@ -36,55 +47,100 @@
         <h1 class="page-title" id="txt-title"></h1>
         <p class="page-subtitle" id="txt-subtitle"></p>
       </div>
-      <div class="section animate-in" style="display:flex;gap:0;padding:0;overflow:hidden;animation-delay:0.05s">
-        <div style="flex:1;padding:18px;text-align:center;border-right:1px solid var(--border)">
-          <div id="statTotal" class="num" style="font-size:26px">—</div>
-          <div style="font-size:11px;color:var(--text-muted);margin-top:2px" id="txt-stat-units"></div>
+
+      <!-- TABS -->
+      <div class="tab-bar animate-in">
+        <div class="tab active" onclick="switchTab('parcel')" id="tab-parcel"></div>
+        <div class="tab" onclick="switchTab('visitor')" id="tab-visitor"></div>
+      </div>
+
+      <!-- ══ PARCEL TAB ══ -->
+      <div id="parcelTab">
+        <div class="section animate-in" style="display:flex;gap:0;padding:0;overflow:hidden;margin-bottom:12px">
+          <div style="flex:1;padding:16px;text-align:center;border-right:1px solid var(--border)">
+            <div id="statTotal" class="num" style="font-size:24px">—</div>
+            <div style="font-size:11px;color:var(--text-muted);margin-top:2px" id="txt-stat-units"></div>
+          </div>
+          <div style="flex:1;padding:16px;text-align:center;border-right:1px solid var(--border)">
+            <div id="statPending" class="num" style="font-size:24px;color:var(--accent)">—</div>
+            <div style="font-size:11px;color:var(--text-muted);margin-top:2px" id="txt-stat-pending"></div>
+          </div>
+          <div style="flex:1;padding:16px;text-align:center">
+            <div id="statDone" class="num" style="font-size:24px;color:var(--green)">—</div>
+            <div style="font-size:11px;color:var(--text-muted);margin-top:2px" id="txt-stat-done"></div>
+          </div>
         </div>
-        <div style="flex:1;padding:18px;text-align:center;border-right:1px solid var(--border)">
-          <div id="statPending" class="num" style="font-size:26px;color:var(--accent)">—</div>
-          <div style="font-size:11px;color:var(--text-muted);margin-top:2px" id="txt-stat-pending"></div>
+        <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap" class="animate-in">
+          <input id="searchInput" oninput="applyFilters()" style="flex:1;min-width:120px;height:40px">
+          <div class="select-wrap" style="flex:0 0 150px">
+            <select id="statusFilter" onchange="applyFilters()" style="height:40px">
+              <option value="all" id="opt-all"></option>
+              <option value="hasPending" id="opt-pending"></option>
+              <option value="urgent" id="opt-urgent"></option>
+              <option value="recent" id="opt-recent"></option>
+              <option value="done" id="opt-done"></option>
+            </select>
+          </div>
         </div>
-        <div style="flex:1;padding:18px;text-align:center">
-          <div id="statDone" class="num" style="font-size:26px;color:var(--green)">—</div>
-          <div style="font-size:11px;color:var(--text-muted);margin-top:2px" id="txt-stat-done"></div>
+        <div class="section animate-in" style="padding:0;overflow:hidden">
+          <div class="table-wrap">
+            <table>
+              <thead><tr>
+                <th id="col-unit"></th><th id="col-email"></th><th id="col-phone"></th>
+                <th style="text-align:center">⏳</th><th style="text-align:center">✓</th><th></th>
+              </tr></thead>
+              <tbody id="tableBody"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="pagination animate-in">
+          <button class="btn btn-outline" onclick="prevPage()" id="txt-prev"></button>
+          <span class="page-info" id="pageInfo">—</span>
+          <button class="btn btn-outline" onclick="nextPage()" id="txt-next"></button>
         </div>
       </div>
-      <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap" class="animate-in">
-        <input id="searchInput" oninput="applyFilters()" style="flex:1;min-width:120px;height:40px">
-        <div class="select-wrap" style="flex:0 0 150px">
-          <select id="statusFilter" onchange="applyFilters()" style="height:40px">
-            <option value="all" id="opt-all"></option>
-            <option value="hasPending" id="opt-pending"></option>
-            <option value="urgent" id="opt-urgent"></option>
-            <option value="recent" id="opt-recent"></option>
-            <option value="done" id="opt-done"></option>
-          </select>
+
+      <!-- ══ VISITOR TAB ══ -->
+      <div id="visitorTab" style="display:none">
+        <div class="section animate-in" style="display:flex;gap:0;padding:0;overflow:hidden;margin-bottom:12px">
+          <div style="flex:1;padding:14px;text-align:center;border-right:1px solid var(--border)">
+            <div id="vStatPending" class="num" style="font-size:22px;color:var(--accent)">—</div>
+            <div style="font-size:11px;color:var(--text-muted);margin-top:2px" id="txt-vstat-pending"></div>
+          </div>
+          <div style="flex:1;padding:14px;text-align:center;border-right:1px solid var(--border)">
+            <div id="vStatApproved" class="num" style="font-size:22px;color:var(--green)">—</div>
+            <div style="font-size:11px;color:var(--text-muted);margin-top:2px" id="txt-vstat-approved"></div>
+          </div>
+          <div style="flex:1;padding:14px;text-align:center">
+            <div id="vStatIn" class="num" style="font-size:22px;color:#63b3ed">—</div>
+            <div style="font-size:11px;color:var(--text-muted);margin-top:2px" id="txt-vstat-in"></div>
+          </div>
         </div>
-      </div>
-      <div class="section animate-in" style="padding:0;overflow:hidden;animation-delay:0.15s">
-        <div class="table-wrap">
-          <table>
-            <thead><tr>
-              <th id="col-unit"></th><th id="col-email"></th><th id="col-phone"></th>
-              <th style="text-align:center">⏳</th><th style="text-align:center">✓</th><th></th>
-            </tr></thead>
-            <tbody id="tableBody"></tbody>
-          </table>
+        <div style="margin-bottom:10px">
+          <input id="visSearchInput" oninput="applyVisitorFilter()" style="height:40px">
         </div>
-      </div>
-      <div class="pagination animate-in" style="animation-delay:0.2s">
-        <button class="btn btn-outline" onclick="prevPage()" id="txt-prev"></button>
-        <span class="page-info" id="pageInfo">—</span>
-        <button class="btn btn-outline" onclick="nextPage()" id="txt-next"></button>
+        <div style="margin-bottom:10px">
+          <div class="select-wrap">
+            <select id="visStatusFilter" onchange="applyVisitorFilter()" style="height:40px">
+              <option value="all"></option>
+              <option value="Pending" id="vopt-pending"></option>
+              <option value="Approved" id="vopt-approved"></option>
+              <option value="Rejected" id="vopt-rejected"></option>
+              <option value="Checked In" id="vopt-checkedin"></option>
+            </select>
+          </div>
+        </div>
+        <div class="section animate-in" style="padding:10px 16px">
+          <div id="visitorList"></div>
+        </div>
       </div>
     </main>
   </div>
+
   <div class="toast" id="toast"></div>
   <script src="js/i18n.js"></script>
   <script src="js/theme.js"></script>
   <script src="js/nav.js"></script>
-  <script src="js/lightbox.js"></script>
   <script src="js/api.js"></script>
   <script>
     renderNav('card_admin')
@@ -109,22 +165,40 @@
     document.getElementById('col-phone').textContent = t('admin_col_phone')
     document.getElementById('txt-prev').textContent = t('admin_prev')
     document.getElementById('txt-next').textContent = t('admin_next')
+    document.getElementById('tab-parcel').textContent = '📦 ' + t('sys_parcel')
+    document.getElementById('tab-visitor').textContent = '🪪 ' + t('sys_visitor')
+    document.getElementById('txt-vstat-pending').textContent = t('vis_status_pending')
+    document.getElementById('txt-vstat-approved').textContent = t('vis_status_approved')
+    document.getElementById('txt-vstat-in').textContent = t('vis_status_checkedin')
+    document.getElementById('vopt-pending').textContent = t('vis_status_pending')
+    document.getElementById('vopt-approved').textContent = t('vis_status_approved')
+    document.getElementById('vopt-rejected').textContent = t('vis_status_rejected')
+    document.getElementById('vopt-checkedin').textContent = t('vis_status_checkedin')
+    document.getElementById('visSearchInput').placeholder = t('admin_search')
 
-    let allData=[], filtered=[], page=1
-    const perPage=15
-    const TWO_DAYS_MS = 2*24*60*60*1000
+    let allData=[], filtered=[], page=1, allVisitors=[]
+    const perPage=15, TWO_DAYS_MS=2*24*60*60*1000
 
     function showToast(msg,type='') {
-      const t2=document.getElementById('toast'); t2.textContent=msg; t2.className=`toast ${type} show`
-      setTimeout(()=>t2.className='toast',2800)
+      const el=document.getElementById('toast'); el.textContent=msg; el.className=`toast ${type} show`
+      setTimeout(()=>el.className='toast',2800)
+    }
+
+    function switchTab(tab) {
+      document.getElementById('tab-parcel').classList.toggle('active', tab==='parcel')
+      document.getElementById('tab-visitor').classList.toggle('active', tab==='visitor')
+      document.getElementById('parcelTab').style.display = tab==='parcel' ? 'block' : 'none'
+      document.getElementById('visitorTab').style.display = tab==='visitor' ? 'block' : 'none'
     }
 
     function unlockAdmin() {
-      const pin=document.getElementById('adminPin').value
-      if (pin!=='1234') { document.getElementById('pinError').textContent=t('admin_pin_error'); return }
-      document.getElementById('pinGate').style.display='none'
-      document.getElementById('dashboard').style.display='block'
+      if (document.getElementById('adminPin').value !== '1234') {
+        document.getElementById('pinError').textContent = t('admin_pin_error'); return
+      }
+      document.getElementById('pinGate').style.display = 'none'
+      document.getElementById('dashboard').style.display = 'block'
       loadAdmin()
+      loadAdminVisitors()
     }
 
     function isUrgent(parcel) {
@@ -133,48 +207,59 @@
     }
 
     function loadAdmin() {
-      apiAdmin().then(data=>{
-        allData=data
-        const totalPending=data.reduce((a,o)=>a+o.parcels.filter(p=>p.status==='Pending').length,0)
-        const totalDone=data.reduce((a,o)=>a+o.parcels.filter(p=>p.status==='Done').length,0)
-        document.getElementById('statTotal').textContent=data.length
-        document.getElementById('statPending').textContent=totalPending
-        document.getElementById('statDone').textContent=totalDone
+      apiAdmin().then(data => {
+        allData = data
+        const totalPending = data.reduce((a,o)=>a+o.parcels.filter(p=>p.status==='Pending').length, 0)
+        const totalDone = data.reduce((a,o)=>a+o.parcels.filter(p=>p.status==='Done').length, 0)
+        document.getElementById('statTotal').textContent = data.length
+        document.getElementById('statPending').textContent = totalPending
+        document.getElementById('statDone').textContent = totalDone
         applyFilters()
-      }).catch(()=>showToast(t('error_server'),'error-toast'))
+      }).catch(() => showToast(t('error_server'),'error-toast'))
     }
 
+    async function loadAdminVisitors() {
+      try {
+        allVisitors = await apiGetVisitors()
+        document.getElementById('vStatPending').textContent = allVisitors.filter(v=>v.status==='Pending').length
+        document.getElementById('vStatApproved').textContent = allVisitors.filter(v=>v.status==='Approved').length
+        document.getElementById('vStatIn').textContent = allVisitors.filter(v=>v.status==='Checked In').length
+        applyVisitorFilter()
+      } catch(e) { console.error(e) }
+    }
+
+    // ── PARCEL ──
     function applyFilters() {
-      const search=document.getElementById('searchInput').value.toLowerCase()
-      const status=document.getElementById('statusFilter').value
-      filtered=allData.filter(o=>{
-        const matchSearch=o.unit.toLowerCase().includes(search)||o.email.toLowerCase().includes(search)||o.phone.includes(search)
-        const pending=o.parcels.filter(p=>p.status==='Pending')
-        const done=o.parcels.filter(p=>p.status==='Done').length
-        const hasUrgent=pending.some(p=>isUrgent(p))
-        const hasRecent=pending.some(p=>!isUrgent(p))
-        const matchStatus=status==='all'||(status==='hasPending'&&pending.length>0)||(status==='urgent'&&hasUrgent)||(status==='recent'&&hasRecent)||(status==='done'&&done>0&&pending.length===0)
-        return matchSearch&&matchStatus
+      const search = document.getElementById('searchInput').value.toLowerCase()
+      const status = document.getElementById('statusFilter').value
+      filtered = allData.filter(o => {
+        const matchSearch = o.unit.toLowerCase().includes(search)||o.email.toLowerCase().includes(search)||o.phone.includes(search)
+        const pending = o.parcels.filter(p=>p.status==='Pending')
+        const done = o.parcels.filter(p=>p.status==='Done').length
+        const hasUrgent = pending.some(p=>isUrgent(p))
+        const hasRecent = pending.some(p=>!isUrgent(p))
+        const matchStatus = status==='all'||(status==='hasPending'&&pending.length>0)||(status==='urgent'&&hasUrgent)||(status==='recent'&&hasRecent)||(status==='done'&&done>0&&pending.length===0)
+        return matchSearch && matchStatus
       })
       page=1; render()
     }
 
     function render() {
-      const start=(page-1)*perPage
-      const slice=filtered.slice(start,start+perPage)
-      const totalPages=Math.max(1,Math.ceil(filtered.length/perPage))
-      document.getElementById('pageInfo').textContent=page+' / '+totalPages
-      let html=''
-      slice.forEach(o=>{
-        const pendingArr=o.parcels.filter(p=>p.status==='Pending')
-        const done=o.parcels.filter(p=>p.status==='Done').length
-        const urgentCount=pendingArr.filter(p=>isUrgent(p)).length
-        const pending=pendingArr.length
-        let pendingBadge=''
-        if (urgentCount>0) pendingBadge+=`<span class="badge-status badge-urgent" title="${t('admin_urgent')}">🔴 ${urgentCount}</span> `
-        if (pending-urgentCount>0) pendingBadge+=`<span class="badge-status badge-pending">🟡 ${pending-urgentCount}</span>`
-        if (pending===0) pendingBadge='<span style="color:var(--text-muted)">—</span>'
-        html+=`<tr>
+      const start = (page-1)*perPage
+      const slice = filtered.slice(start, start+perPage)
+      const totalPages = Math.max(1, Math.ceil(filtered.length/perPage))
+      document.getElementById('pageInfo').textContent = page + ' / ' + totalPages
+      let html = ''
+      slice.forEach(o => {
+        const pendingArr = o.parcels.filter(p=>p.status==='Pending')
+        const done = o.parcels.filter(p=>p.status==='Done').length
+        const urgentCount = pendingArr.filter(p=>isUrgent(p)).length
+        const pending = pendingArr.length
+        let pendingBadge = ''
+        if (urgentCount>0) pendingBadge += `<span class="badge-status badge-urgent">🔴 ${urgentCount}</span> `
+        if (pending-urgentCount>0) pendingBadge += `<span class="badge-status badge-pending">🟡 ${pending-urgentCount}</span>`
+        if (pending===0) pendingBadge = '<span style="color:var(--text-muted)">—</span>'
+        html += `<tr>
           <td><strong style="font-family:'JetBrains Mono',monospace;font-size:13px">${o.unit}</strong></td>
           <td><input id="e-${o.unit}" value="${o.email}" style="min-width:150px"></td>
           <td><input id="p-${o.unit}" value="${o.phone}" style="min-width:110px"></td>
@@ -183,21 +268,66 @@
           <td><button class="btn-green" onclick="saveOwner('${o.unit}')">${t('save')}</button></td>
         </tr>`
       })
-      document.getElementById('tableBody').innerHTML=html
+      document.getElementById('tableBody').innerHTML = html
     }
 
     function saveOwner(unit) {
-      const email=document.getElementById('e-'+unit).value
-      const phone=document.getElementById('p-'+unit).value
-      apiUpdateOwner(unit,{email,phone}).then(()=>{
-        const o=allData.find(x=>x.unit===unit)
+      const email = document.getElementById('e-'+unit).value
+      const phone = document.getElementById('p-'+unit).value
+      apiUpdateOwner(unit, {email, phone}).then(() => {
+        const o = allData.find(x=>x.unit===unit)
         if (o) { o.email=email; o.phone=phone }
-        showToast('Unit '+unit+' '+t('admin_saved'),'success')
-      }).catch(()=>showToast(t('admin_save_error'),'error-toast'))
+        showToast('Unit '+unit+' '+t('admin_saved'), 'success')
+      }).catch(() => showToast(t('admin_save_error'),'error-toast'))
     }
 
     function prevPage() { if(page>1){page--;render()} }
     function nextPage() { if(page<Math.ceil(filtered.length/perPage)){page++;render()} }
+
+    // ── VISITOR ──
+    function applyVisitorFilter() {
+      const search = document.getElementById('visSearchInput').value.toUpperCase()
+      const status = document.getElementById('visStatusFilter').value
+      let list = status==='all' ? allVisitors : allVisitors.filter(v=>v.status===status)
+      if (search) list = list.filter(v => v.ref_code.includes(search)||v.name.toUpperCase().includes(search)||v.unit.includes(search))
+      renderVisitorList(list)
+    }
+
+    function fmtDate(ts) {
+      if (!ts) return '—'
+      return new Date(ts).toLocaleString('ms-MY',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})
+    }
+
+    const statusBadge = { Pending:'badge-pending', Approved:'badge-done', Rejected:'badge-urgent', 'Checked In':'badge-done', 'Checked Out':'badge-pending' }
+    const statusKey = { Pending:'vis_status_pending', Approved:'vis_status_approved', Rejected:'vis_status_rejected', 'Checked In':'vis_status_checkedin', 'Checked Out':'guard_checkout' }
+
+    function renderVisitorList(list) {
+      const el = document.getElementById('visitorList')
+      if (!list.length) { el.innerHTML = '<div class="empty"><div class="empty-icon">🪪</div><p>'+t('vis_empty')+'</p></div>'; return }
+      el.innerHTML = list.map(v => `
+        <div class="vis-row">
+          <div style="flex:1;min-width:0">
+            <div class="vis-row-name">${v.name}</div>
+            <div class="vis-row-meta">${v.ref_code} · Unit ${v.unit} · ${fmtDate(v.created_at)}</div>
+            <div style="font-size:11px;color:var(--text-muted)">${v.purpose}</div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:5px">
+            <span class="badge-status ${statusBadge[v.status]||'badge-pending'}">${t(statusKey[v.status]||'vis_status_pending')}</span>
+            ${v.status==='Pending'?`<div style="display:flex;gap:5px">
+              <button class="btn-sm btn-approve" onclick="adminVisitorAction(${v.id},'Approved')">${t('guard_approve')}</button>
+              <button class="btn-sm btn-reject" onclick="adminVisitorAction(${v.id},'Rejected')">${t('guard_reject')}</button>
+            </div>`:''}
+          </div>
+        </div>`).join('')
+    }
+
+    async function adminVisitorAction(id, status) {
+      try {
+        await apiUpdateVisitor(id, status)
+        showToast(t('guard_updated'), 'success')
+        loadAdminVisitors()
+      } catch(e) { showToast(t('error_server'),'error-toast') }
+    }
   </script>
 </body>
 </html>

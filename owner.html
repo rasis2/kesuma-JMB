@@ -2,12 +2,25 @@
 <html lang="ms">
 <head>
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pemilik — Kesuma Parcel</title>
-      <link rel="manifest" href="site.webmanifest">
+  <title>Pemilik — Kesuma JMB</title>
+  <link rel="manifest" href="site.webmanifest">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
-  <link rel="apple-touch-icon" href="favicon.ico">
   <link rel="stylesheet" href="css/style.css">
+  <style>
+    .tab-bar { display:flex; gap:6px; margin-bottom:16px; background:var(--surface2); border-radius:10px; padding:4px; }
+    .tab { flex:1; text-align:center; padding:8px; border-radius:7px; font-size:12px; font-weight:700; cursor:pointer; transition:all 0.2s; color:var(--text-muted); font-family:var(--heading-font); }
+    .tab.active { background:var(--surface); color:var(--text); box-shadow:0 1px 4px rgba(0,0,0,0.15); }
+    .vis-card { background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:14px 16px; margin-bottom:10px; transition:border-color 0.2s; }
+    .vis-card:hover { border-color:var(--border2); }
+    .vis-name { font-family:var(--heading-font); font-size:14px; font-weight:700; margin-bottom:2px; }
+    .vis-meta { font-size:11px; color:var(--text-muted); margin-bottom:8px; font-family:'JetBrains Mono',monospace; }
+    .btn-sm { padding:6px 14px; border-radius:6px; font-size:12px; font-weight:600; cursor:pointer; border:none; font-family:var(--body-font); transition:all 0.2s; }
+    .btn-approve { background:var(--green); color:#fff; }
+    .btn-approve:hover { opacity:0.85; }
+    .btn-reject { background:var(--red); color:#fff; }
+    .btn-reject:hover { opacity:0.85; }
+  </style>
 </head>
 <body>
   <nav class="nav" id="mainNav"></nav>
@@ -17,40 +30,74 @@
       <h1 class="page-title" id="txt-title"></h1>
       <p class="page-subtitle" id="txt-subtitle"></p>
     </div>
-    <div class="section animate-in" style="animation-delay:0.05s">
-      <div class="section-title" id="txt-section"></div>
-      <div class="field">
-        <label id="txt-unit-label"></label>
-        <input id="unit" onkeydown="if(event.key==='Enter')checkOwner()">
+
+    <!-- LOGIN FORM -->
+    <div id="loginForm">
+      <div class="section animate-in" style="animation-delay:0.05s">
+        <div class="section-title" id="txt-section"></div>
+        <div class="field">
+          <label id="txt-unit-label"></label>
+          <input id="unit" onkeydown="if(event.key==='Enter')checkOwner()">
+        </div>
+        <div class="field">
+          <label id="txt-email-label"></label>
+          <input id="email" type="email" onkeydown="if(event.key==='Enter')checkOwner()">
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;margin:6px 0">
+          <div style="flex:1;height:1px;background:var(--border)"></div>
+          <span style="font-size:11px;color:var(--text-muted);font-weight:600">ATAU / OR</span>
+          <div style="flex:1;height:1px;background:var(--border)"></div>
+        </div>
+        <div class="field">
+          <label id="txt-phone-label"></label>
+          <input id="phone" type="tel" onkeydown="if(event.key==='Enter')checkOwner()">
+        </div>
+        <div class="error-text" id="ownerError" style="margin-top:4px"></div>
       </div>
-      <div class="field">
-        <label id="txt-email-label"></label>
-        <input id="email" type="email" onkeydown="if(event.key==='Enter')checkOwner()">
-      </div>
-      <div style="display:flex;align-items:center;gap:10px;margin:6px 0">
-        <div style="flex:1;height:1px;background:var(--border)"></div>
-        <span style="font-size:11px;color:var(--text-muted);font-weight:600">ATAU / OR</span>
-        <div style="flex:1;height:1px;background:var(--border)"></div>
-      </div>
-      <div class="field">
-        <label id="txt-phone-label"></label>
-        <input id="phone" type="tel" onkeydown="if(event.key==='Enter')checkOwner()">
-      </div>
-      <div class="error-text" id="ownerError" style="margin-top:4px"></div>
+      <button class="btn btn-gold animate-in" onclick="checkOwner()" id="txt-check-btn"></button>
     </div>
-    <div style="display:flex;gap:10px;margin-bottom:20px" class="animate-in">
-      <button class="btn btn-gold" onclick="checkOwner()" style="flex:1" id="txt-check-btn"></button>
-      <div class="select-wrap" style="flex:0 0 130px">
-        <select id="filterStatus" onchange="applyFilter()" style="height:44px">
-          <option value="all" id="opt-all"></option>
-          <option value="Pending" id="opt-pending"></option>
-          <option value="Done" id="opt-done"></option>
-        </select>
+
+    <!-- DASHBOARD (shown after login) -->
+    <div id="dashboard" style="display:none">
+      <!-- Tab bar: Parcel | Visitor -->
+      <div class="tab-bar animate-in">
+        <div class="tab active" onclick="switchTab('parcel')" id="tab-parcel"></div>
+        <div class="tab" onclick="switchTab('visitor')" id="tab-visitor"></div>
+      </div>
+
+      <!-- PARCEL TAB -->
+      <div id="parcelTab">
+        <div style="display:flex;gap:10px;margin-bottom:12px">
+          <div class="select-wrap" style="flex:1">
+            <select id="filterStatus" onchange="applyParcelFilter()" style="height:40px">
+              <option value="all" id="opt-all"></option>
+              <option value="Pending" id="opt-pending"></option>
+              <option value="Done" id="opt-done"></option>
+            </select>
+          </div>
+        </div>
+        <div id="parcelResult"></div>
+      </div>
+
+      <!-- VISITOR TAB -->
+      <div id="visitorTab" style="display:none">
+        <div style="display:flex;gap:10px;margin-bottom:12px">
+          <div class="select-wrap" style="flex:1">
+            <select id="filterVisitor" onchange="applyVisitorFilter()" style="height:40px">
+              <option value="all" id="vopt-all"></option>
+              <option value="Pending" id="vopt-pending"></option>
+              <option value="Approved" id="vopt-approved"></option>
+              <option value="Rejected" id="vopt-rejected"></option>
+              <option value="Checked In" id="vopt-checkedin"></option>
+            </select>
+          </div>
+        </div>
+        <div id="visitorResult"></div>
       </div>
     </div>
-    <div id="result"></div>
   </main>
   <div class="toast" id="toast"></div>
+
   <script src="js/i18n.js"></script>
   <script src="js/theme.js"></script>
   <script src="js/nav.js"></script>
@@ -68,65 +115,94 @@
     document.getElementById('txt-phone-label').textContent = t('owner_phone_label')
     document.getElementById('phone').placeholder = t('owner_phone_placeholder')
     document.getElementById('txt-check-btn').textContent = '🔍  ' + t('check')
+    document.getElementById('tab-parcel').textContent = '📦 ' + t('sys_parcel')
+    document.getElementById('tab-visitor').textContent = '🪪 ' + t('sys_visitor')
     document.getElementById('opt-all').textContent = t('owner_filter_all')
     document.getElementById('opt-pending').textContent = t('owner_filter_pending')
     document.getElementById('opt-done').textContent = t('owner_filter_done')
+    document.getElementById('vopt-all').textContent = t('owner_filter_all')
+    document.getElementById('vopt-pending').textContent = t('vis_status_pending')
+    document.getElementById('vopt-approved').textContent = t('vis_status_approved')
+    document.getElementById('vopt-rejected').textContent = t('vis_status_rejected')
+    document.getElementById('vopt-checkedin').textContent = t('vis_status_checkedin')
 
-    let allParcels = []
+    let allParcels = [], allVisitors = [], currentUnit = ''
 
     function showToast(msg, type='') {
-      const t2=document.getElementById('toast'); t2.textContent=msg; t2.className=`toast ${type} show`
-      setTimeout(()=>t2.className='toast',2800)
+      const el = document.getElementById('toast')
+      el.textContent = msg; el.className = `toast ${type} show`
+      setTimeout(() => el.className = 'toast', 2800)
+    }
+
+    function switchTab(tab) {
+      document.getElementById('tab-parcel').classList.toggle('active', tab==='parcel')
+      document.getElementById('tab-visitor').classList.toggle('active', tab==='visitor')
+      document.getElementById('parcelTab').style.display = tab==='parcel' ? 'block' : 'none'
+      document.getElementById('visitorTab').style.display = tab==='visitor' ? 'block' : 'none'
     }
 
     function checkOwner() {
-      const unit=document.getElementById('unit').value.trim()
-      const email=document.getElementById('email').value.trim()
-      const phone=document.getElementById('phone').value.trim()
-      const err=document.getElementById('ownerError')
-      if (!unit||(!email&&!phone)) { err.textContent=t('owner_error_fill'); return }
-      err.textContent=''
-      document.getElementById('result').innerHTML='<p style="color:var(--text-muted);font-size:13px;text-align:center;padding:24px">'+t('loading')+'</p>'
-      apiCheckOwner({unit,email,phone}).then(data=>{
-        if (data.error) { err.textContent=data.error; document.getElementById('result').innerHTML=''; return }
-        allParcels=data.parcels; applyFilter()
-      }).catch(()=>{ err.textContent=t('error_server'); document.getElementById('result').innerHTML='' })
+      const unit = document.getElementById('unit').value.trim()
+      const email = document.getElementById('email').value.trim()
+      const phone = document.getElementById('phone').value.trim()
+      const err = document.getElementById('ownerError')
+      if (!unit || (!email && !phone)) { err.textContent = t('owner_error_fill'); return }
+      err.textContent = ''
+      currentUnit = unit
+
+      document.getElementById('parcelResult').innerHTML = '<p style="color:var(--text-muted);font-size:13px;text-align:center;padding:24px">'+t('loading')+'</p>'
+
+      apiCheckOwner({unit, email, phone}).then(data => {
+        if (data.error) { err.textContent = data.error; return }
+        allParcels = data.parcels
+        document.getElementById('loginForm').style.display = 'none'
+        document.getElementById('dashboard').style.display = 'block'
+        applyParcelFilter()
+        loadVisitors(unit)
+      }).catch(() => { err.textContent = t('error_server') })
     }
 
-    function applyFilter() {
-      const filter=document.getElementById('filterStatus').value
-      renderParcels(filter==='all'?allParcels:allParcels.filter(p=>p.status===filter))
+    async function loadVisitors(unit) {
+      try {
+        const res = await sbFetch('/rest/v1/visitors?unit=eq.' + encodeURIComponent(unit) + '&order=created_at.desc&select=*')
+        allVisitors = await res.json()
+        applyVisitorFilter()
+      } catch(e) { console.error(e) }
     }
 
     function fmtDate(ts) {
       if (!ts) return '—'
       const d = new Date(ts)
-      const dateStr = d.toLocaleDateString(getLang()==='zh'?'zh-MY':getLang()==='ta'?'ta-MY':'ms-MY',{day:'numeric',month:'short',year:'numeric'})
-      const timeStr = d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})
-      return dateStr + ' · ' + timeStr
+      return d.toLocaleDateString('ms-MY',{day:'numeric',month:'short',year:'numeric'}) + ' · ' + d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})
+    }
+
+    // ── PARCEL ──────────────────────────
+    function applyParcelFilter() {
+      const f = document.getElementById('filterStatus').value
+      renderParcels(f==='all' ? allParcels : allParcels.filter(p=>p.status===f))
     }
 
     function renderParcels(parcels) {
-      const el=document.getElementById('result')
-      if (parcels.length===0) { el.innerHTML='<div class="empty animate-in"><div class="empty-icon">📭</div><p>'+t('owner_empty')+'</p></div>'; return }
-      const pending=allParcels.filter(p=>p.status==='Pending').length
-      const done=allParcels.filter(p=>p.status==='Done').length
-      let html=`<div class="section animate-in" style="display:flex;gap:0;padding:0;overflow:hidden;margin-bottom:12px">
-        <div style="text-align:center;flex:1;padding:16px;border-right:1px solid var(--border)">
-          <div class="num" style="font-size:26px;color:var(--accent)">${pending}</div>
+      const el = document.getElementById('parcelResult')
+      const pending = allParcels.filter(p=>p.status==='Pending').length
+      const done = allParcels.filter(p=>p.status==='Done').length
+      let html = `<div class="section animate-in" style="display:flex;gap:0;padding:0;overflow:hidden;margin-bottom:12px">
+        <div style="text-align:center;flex:1;padding:14px;border-right:1px solid var(--border)">
+          <div class="num" style="font-size:22px;color:var(--accent)">${pending}</div>
           <div style="font-size:11px;color:var(--text-muted);margin-top:2px">${t('pending')}</div>
         </div>
-        <div style="text-align:center;flex:1;padding:16px;border-right:1px solid var(--border)">
-          <div class="num" style="font-size:26px;color:var(--green)">${done}</div>
+        <div style="text-align:center;flex:1;padding:14px;border-right:1px solid var(--border)">
+          <div class="num" style="font-size:22px;color:var(--green)">${done}</div>
           <div style="font-size:11px;color:var(--text-muted);margin-top:2px">${t('done')}</div>
         </div>
-        <div style="text-align:center;flex:1;padding:16px">
-          <div class="num" style="font-size:26px">${allParcels.length}</div>
+        <div style="text-align:center;flex:1;padding:14px">
+          <div class="num" style="font-size:22px">${allParcels.length}</div>
           <div style="font-size:11px;color:var(--text-muted);margin-top:2px">${t('total')}</div>
         </div>
       </div>`
-      parcels.forEach((p,i)=>{
-        html+=`<div class="parcel-card animate-in" style="animation-delay:${i*0.04}s">
+      if (!parcels.length) { el.innerHTML = html + '<div class="empty"><div class="empty-icon">📭</div><p>'+t('owner_empty')+'</p></div>'; return }
+      parcels.forEach((p,i) => {
+        html += `<div class="parcel-card animate-in" style="animation-delay:${i*0.04}s">
           <img class="parcel-img" src="${p.image}" alt="Parsel" onclick="openLightbox('${p.image}')" title="${t('enlarge_hint')}">
           <div class="parcel-info">
             <div class="parcel-courier">${p.courier}</div>
@@ -138,11 +214,64 @@
           </div>
         </div>`
       })
-      el.innerHTML=html
+      el.innerHTML = html
     }
 
     function markDone(id) {
-      apiMarkDone(id).then(()=>{ showToast(t('owner_marked'),'success'); checkOwner() })
+      apiMarkDone(id).then(() => { showToast(t('owner_marked'),'success'); checkOwner() })
+    }
+
+    // ── VISITOR ──────────────────────────
+    function applyVisitorFilter() {
+      const f = document.getElementById('filterVisitor').value
+      renderVisitors(f==='all' ? allVisitors : allVisitors.filter(v=>v.status===f))
+    }
+
+    const statusBadge = { Pending:'badge-pending', Approved:'badge-done', Rejected:'badge-urgent', 'Checked In':'badge-done' }
+    const statusKey = { Pending:'vis_status_pending', Approved:'vis_status_approved', Rejected:'vis_status_rejected', 'Checked In':'vis_status_checkedin' }
+
+    function renderVisitors(visitors) {
+      const el = document.getElementById('visitorResult')
+      const pending = allVisitors.filter(v=>v.status==='Pending').length
+      const approved = allVisitors.filter(v=>v.status==='Approved'||v.status==='Checked In').length
+      let html = `<div class="section animate-in" style="display:flex;gap:0;padding:0;overflow:hidden;margin-bottom:12px">
+        <div style="text-align:center;flex:1;padding:14px;border-right:1px solid var(--border)">
+          <div class="num" style="font-size:22px;color:var(--accent)">${pending}</div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:2px">${t('vis_status_pending')}</div>
+        </div>
+        <div style="text-align:center;flex:1;padding:14px;border-right:1px solid var(--border)">
+          <div class="num" style="font-size:22px;color:var(--green)">${approved}</div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:2px">${t('vis_status_approved')}</div>
+        </div>
+        <div style="text-align:center;flex:1;padding:14px">
+          <div class="num" style="font-size:22px">${allVisitors.length}</div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:2px">${t('total')}</div>
+        </div>
+      </div>`
+      if (!visitors.length) { el.innerHTML = html + '<div class="empty"><div class="empty-icon">🪪</div><p>'+t('vis_empty')+'</p></div>'; return }
+      visitors.forEach((v,i) => {
+        html += `<div class="vis-card animate-in" style="animation-delay:${i*0.04}s">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:3px">
+            <div class="vis-name">${v.name}</div>
+            <span class="badge-status ${statusBadge[v.status]||'badge-pending'}">${t(statusKey[v.status]||'vis_status_pending')}</span>
+          </div>
+          <div class="vis-meta">${v.ref_code} · ${fmtDate(v.created_at)}</div>
+          <div style="font-size:12px;color:var(--text-muted);margin-bottom:10px">${v.purpose} · ${v.phone}</div>
+          ${v.status==='Pending' ? `<div style="display:flex;gap:8px">
+            <button class="btn-sm btn-approve" onclick="approveVisitor(${v.id},'Approved')">${t('guard_approve')}</button>
+            <button class="btn-sm btn-reject" onclick="approveVisitor(${v.id},'Rejected')">${t('guard_reject')}</button>
+          </div>` : ''}
+        </div>`
+      })
+      el.innerHTML = html
+    }
+
+    async function approveVisitor(id, status) {
+      try {
+        await apiUpdateVisitor(id, status)
+        showToast(status==='Approved' ? t('vis_status_approved') : t('vis_status_rejected'), 'success')
+        loadVisitors(currentUnit)
+      } catch(e) { showToast(t('error_server'), 'error-toast') }
     }
   </script>
 </body>

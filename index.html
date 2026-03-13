@@ -12,33 +12,39 @@
     body { display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:100vh; overflow-x:hidden; }
     body::before { content:''; position:fixed; top:-200px; left:50%; transform:translateX(-50%); width:600px; height:600px; background:radial-gradient(circle,rgba(var(--accent-rgb),0.07) 0%,transparent 70%); pointer-events:none; z-index:0; }
     .topbar { position:fixed; top:14px; right:16px; z-index:100; display:flex; gap:8px; align-items:center; }
-    .hero { position:relative; z-index:1; text-align:center; padding:56px 20px 20px; max-width:560px; width:100%; }
+    .hero { position:relative; z-index:1; text-align:center; padding:56px 20px 40px; max-width:520px; width:100%; }
     .badge { display:inline-block; background:var(--accent-dim); border:1px solid rgba(var(--accent-rgb),0.3); color:var(--accent); font-size:11px; font-weight:600; letter-spacing:2px; text-transform:uppercase; padding:5px 14px; border-radius:100px; margin-bottom:20px; animation:fadeIn 0.5s ease both; }
-    h1 { font-family:var(--heading-font); font-size:clamp(36px,7vw,54px); font-weight:800; line-height:1.05; letter-spacing:-2px; margin-bottom:12px; animation:fadeIn 0.5s 0.08s ease both; }
+    h1 { font-family:var(--heading-font); font-size:clamp(34px,7vw,50px); font-weight:800; line-height:1.05; letter-spacing:-2px; margin-bottom:10px; animation:fadeIn 0.5s 0.08s ease both; }
     h1 span { color:var(--accent); }
-    .subtitle { color:var(--text-muted); font-size:14px; line-height:1.7; margin-bottom:32px; animation:fadeIn 0.5s 0.16s ease both; }
+    .subtitle { color:var(--text-muted); font-size:13px; line-height:1.7; margin-bottom:28px; animation:fadeIn 0.5s 0.16s ease both; }
 
-    /* BIG SYSTEM CARDS */
-    .systems { display:grid; grid-template-columns:1fr 1fr; gap:12px; width:100%; max-width:480px; margin:0 auto 20px; animation:fadeIn 0.5s 0.2s ease both; }
-    .sys-card { position:relative; background:var(--surface); border:1px solid var(--border); border-radius:20px; padding:28px 20px 22px; text-align:center; text-decoration:none; color:inherit; display:block; transition:all 0.2s; overflow:hidden; }
-    .sys-card::before { content:''; position:absolute; inset:0; opacity:0; transition:opacity 0.3s; border-radius:inherit; }
-    .sys-card-parcel::before { background:radial-gradient(circle at 50% 0%,rgba(var(--accent-rgb),0.15),transparent 70%); }
-    .sys-card-visitor::before { background:radial-gradient(circle at 50% 0%,rgba(76,175,125,0.12),transparent 70%); }
-    .sys-card:hover { transform:translateY(-3px); box-shadow:var(--shadow); border-color:rgba(var(--accent-rgb),0.4); }
-    .sys-card:hover::before { opacity:1; }
-    .sys-icon { font-size:36px; margin-bottom:12px; display:block; }
-    .sys-label { font-family:var(--heading-font); font-size:17px; font-weight:800; margin-bottom:5px; letter-spacing:-0.3px; }
-    .sys-desc { font-size:11px; color:var(--text-muted); line-height:1.5; }
-    .sys-arrow { position:absolute; top:16px; right:16px; color:var(--text-muted); font-size:13px; transition:all 0.2s; }
-    .sys-card:hover .sys-arrow { color:var(--accent); transform:translate(2px,-2px); }
+    /* System blocks */
+    .sys-block { width:100%; max-width:480px; margin:0 auto 14px; animation:fadeIn 0.5s 0.2s ease both; }
+    .sys-label-row { display:flex; align-items:center; gap:8px; margin-bottom:8px; padding:0 2px; }
+    .sys-tag { font-size:10px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:var(--text-muted); }
+    .sys-line { flex:1; height:1px; background:var(--border); }
 
-    /* SMALL LINKS */
-    .small-links { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; width:100%; max-width:480px; margin:0 auto; animation:fadeIn 0.5s 0.28s ease both; }
-    .sm-card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:12px 10px; text-align:center; text-decoration:none; color:inherit; display:block; transition:all 0.2s; }
-    .sm-card:hover { border-color:rgba(var(--accent-rgb),0.4); transform:translateY(-1px); }
-    .sm-icon { font-size:18px; margin-bottom:4px; display:block; }
-    .sm-label { font-size:11px; font-weight:600; color:var(--text-muted); }
-    .footer-note { position:relative; z-index:1; margin-top:28px; font-size:11px; color:var(--text-muted); opacity:0.4; animation:fadeIn 0.5s 0.4s ease both; }
+    /* Main sys card */
+    .sys-main { position:relative; background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:18px 20px; text-decoration:none; color:inherit; display:flex; align-items:center; gap:14px; transition:all 0.2s; margin-bottom:8px; }
+    .sys-main:hover { transform:translateX(3px); box-shadow:var(--shadow); border-color:rgba(var(--accent-rgb),0.3); }
+    .sys-main-icon { width:44px; height:44px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:22px; flex-shrink:0; }
+    .sys-main-icon.gold { background:var(--accent-dim); border:1px solid rgba(var(--accent-rgb),0.2); }
+    .sys-main-icon.teal { background:rgba(76,175,125,0.1); border:1px solid rgba(76,175,125,0.2); }
+    .sys-main-info { flex:1; text-align:left; }
+    .sys-main-name { font-family:var(--heading-font); font-size:15px; font-weight:800; margin-bottom:2px; }
+    .sys-main-desc { font-size:11px; color:var(--text-muted); }
+    .sys-arrow { color:var(--text-muted); font-size:14px; transition:all 0.2s; }
+    .sys-main:hover .sys-arrow { color:var(--accent); transform:translateX(3px); }
+
+    /* Sub links */
+    .sub-links { display:grid; grid-template-columns:1fr 1fr; gap:7px; }
+    .sub-card { background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:10px 12px; text-decoration:none; color:inherit; display:flex; align-items:center; gap:8px; transition:all 0.2s; font-size:12px; font-weight:600; }
+    .sub-card:hover { border-color:rgba(var(--accent-rgb),0.35); background:var(--surface); }
+    .sub-icon { font-size:15px; }
+
+    /* Admin row */
+    .admin-row { width:100%; max-width:480px; margin:0 auto; animation:fadeIn 0.5s 0.32s ease both; }
+    .footer-note { position:relative; z-index:1; margin-top:24px; font-size:11px; color:var(--text-muted); opacity:0.4; animation:fadeIn 0.5s 0.4s ease both; }
   </style>
 </head>
 <body>
@@ -53,30 +59,56 @@
     <h1 id="txt-h1"></h1>
     <p class="subtitle" id="txt-subtitle"></p>
 
-    <!-- 2 main systems -->
-    <div class="systems">
-      <a href="parcel.html" class="sys-card sys-card-parcel">
-        <span class="sys-icon">📦</span>
-        <div class="sys-label" id="txt-sys-parcel"></div>
-        <div class="sys-desc" id="txt-sys-parcel-desc"></div>
-        <span class="sys-arrow">↗</span>
+    <!-- PARCEL SYSTEM -->
+    <div class="sys-block" style="animation-delay:0.2s">
+      <div class="sys-label-row">
+        <div class="sys-line"></div>
+        <span class="sys-tag" id="txt-sys-parcel-tag"></span>
+        <div class="sys-line"></div>
+      </div>
+      <a href="parcel.html" class="sys-main">
+        <div class="sys-main-icon gold">📦</div>
+        <div class="sys-main-info">
+          <div class="sys-main-name" id="txt-sys-parcel"></div>
+          <div class="sys-main-desc" id="txt-sys-parcel-desc"></div>
+        </div>
+        <span class="sys-arrow">→</span>
       </a>
-      <a href="visitor.html" class="sys-card sys-card-visitor">
-        <span class="sys-icon">🪪</span>
-        <div class="sys-label" id="txt-sys-visitor"></div>
-        <div class="sys-desc" id="txt-sys-visitor-desc"></div>
-        <span class="sys-arrow">↗</span>
-      </a>
+      <div class="sub-links">
+        <a href="guard.html" class="sub-card"><span class="sub-icon">🛡️</span><span id="txt-guard"></span></a>
+        <a href="plan.html" class="sub-card"><span class="sub-icon">🚀</span><span id="txt-plan"></span></a>
+      </div>
     </div>
 
-    <!-- small utility links -->
-    <div class="small-links">
-      <a href="about.html" class="sm-card"><span class="sm-icon">✦</span><div class="sm-label" id="txt-about"></div></a>
-      <a href="how.html" class="sm-card"><span class="sm-icon">📖</span><div class="sm-label" id="txt-how"></div></a>
-      <a href="contact.html" class="sm-card"><span class="sm-icon">💬</span><div class="sm-label" id="txt-contact"></div></a>
-      <a href="plan.html" class="sm-card"><span class="sm-icon">🚀</span><div class="sm-label" id="txt-plan"></div></a>
-      <a href="admin.html" class="sm-card"><span class="sm-icon">⚙️</span><div class="sm-label" id="txt-admin"></div></a>
-      <a href="guard.html" class="sm-card"><span class="sm-icon">🛡️</span><div class="sm-label" id="txt-guard"></div></a>
+    <!-- VISITOR SYSTEM -->
+    <div class="sys-block" style="animation-delay:0.26s">
+      <div class="sys-label-row">
+        <div class="sys-line"></div>
+        <span class="sys-tag" id="txt-sys-visitor-tag"></span>
+        <div class="sys-line"></div>
+      </div>
+      <a href="visitor.html" class="sys-main">
+        <div class="sys-main-icon teal">🪪</div>
+        <div class="sys-main-info">
+          <div class="sys-main-name" id="txt-sys-visitor"></div>
+          <div class="sys-main-desc" id="txt-sys-visitor-desc"></div>
+        </div>
+        <span class="sys-arrow">→</span>
+      </a>
+      <div class="sub-links">
+        <a href="visitor-register.html" class="sub-card"><span class="sub-icon">📝</span><span id="txt-vis-register"></span></a>
+        <a href="visitor-check.html" class="sub-card"><span class="sub-icon">🔍</span><span id="txt-vis-check"></span></a>
+      </div>
+    </div>
+
+    <!-- ADMIN + ABOUT row -->
+    <div class="admin-row">
+      <div class="sub-links">
+        <a href="admin.html" class="sub-card"><span class="sub-icon">⚙️</span><span id="txt-admin"></span></a>
+        <a href="how.html" class="sub-card"><span class="sub-icon">📖</span><span id="txt-how"></span></a>
+        <a href="about.html" class="sub-card"><span class="sub-icon">✦</span><span id="txt-about"></span></a>
+        <a href="contact.html" class="sub-card"><span class="sub-icon">💬</span><span id="txt-contact"></span></a>
+      </div>
     </div>
   </div>
   <p class="footer-note" id="txt-footer"></p>
@@ -89,16 +121,20 @@
     document.getElementById('txt-badge').textContent = t('index_badge')
     document.getElementById('txt-h1').innerHTML = t('index_title1')+'<br><span>'+t('index_title2')+'</span>'
     document.getElementById('txt-subtitle').textContent = t('index_subtitle')
+    document.getElementById('txt-sys-parcel-tag').textContent = t('sys_parcel')
     document.getElementById('txt-sys-parcel').textContent = t('sys_parcel')
     document.getElementById('txt-sys-parcel-desc').textContent = t('sys_parcel_desc')
+    document.getElementById('txt-sys-visitor-tag').textContent = t('sys_visitor')
     document.getElementById('txt-sys-visitor').textContent = t('sys_visitor')
     document.getElementById('txt-sys-visitor-desc').textContent = t('sys_visitor_desc')
-    document.getElementById('txt-about').textContent = t('card_about')
-    document.getElementById('txt-how').textContent = t('card_how')
-    document.getElementById('txt-contact').textContent = t('contact_title')
-    document.getElementById('txt-plan').textContent = t('plan_short')
-    document.getElementById('txt-admin').textContent = t('card_admin')
     document.getElementById('txt-guard').textContent = t('guard_title')
+    document.getElementById('txt-plan').textContent = t('plan_short')
+    document.getElementById('txt-vis-register').textContent = t('vis_register_title')
+    document.getElementById('txt-vis-check').textContent = t('vis_check_title')
+    document.getElementById('txt-admin').textContent = t('card_admin')
+    document.getElementById('txt-how').textContent = t('card_how')
+    document.getElementById('txt-about').textContent = t('card_about')
+    document.getElementById('txt-contact').textContent = t('contact_title')
     document.getElementById('txt-footer').textContent = t('footer')
   </script>
 </body>
