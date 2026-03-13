@@ -14,13 +14,13 @@
     .topbar { position:fixed; top:0; left:0; right:0; z-index:100; display:flex; align-items:center; justify-content:space-between; padding:10px 16px; background:var(--bg); border-bottom:1px solid var(--border); }
     .topbar-logo { font-family:var(--heading-font); font-size:13px; font-weight:800; color:var(--text-muted); letter-spacing:-0.3px; }
     .topbar-right { display:flex; gap:8px; align-items:center; }
-    .hero { position:relative; z-index:1; text-align:center; padding:28px 16px 40px; max-width:480px; width:100%; margin:0 auto; }
+    .hero { position:relative; z-index:1; text-align:center; padding:28px clamp(12px,4vw,40px) 40px; width:min(480px, 100%); margin:0 auto; box-sizing:border-box; }
     .badge { display:inline-block; background:var(--accent-dim); border:1px solid rgba(var(--accent-rgb),0.3); color:var(--accent); font-size:11px; font-weight:600; letter-spacing:2px; text-transform:uppercase; padding:5px 14px; border-radius:100px; margin-bottom:20px; animation:fadeIn 0.5s ease both; }
     h1 { font-family:var(--heading-font); font-size:clamp(34px,7vw,50px); font-weight:800; line-height:1.05; letter-spacing:-2px; margin-bottom:10px; animation:fadeIn 0.5s 0.08s ease both; }
     h1 span { color:var(--accent); }
     .subtitle { color:var(--text-muted); font-size:13px; line-height:1.7; margin-bottom:28px; animation:fadeIn 0.5s 0.16s ease both; }
 
-    .sys-block { width:100%; max-width:480px; margin:0 auto 14px; animation:fadeIn 0.5s ease both; }
+    .sys-block { width:100%; margin:0 auto 14px; animation:fadeIn 0.5s ease both; }
     .sys-label-row { display:flex; align-items:center; gap:8px; margin-bottom:8px; padding:0 2px; }
     .sys-tag { font-size:10px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:var(--text-muted); }
     .sys-line { flex:1; height:1px; background:var(--border); }
@@ -62,7 +62,7 @@
 
     .sub-links-1 { grid-template-columns:1fr; }
     .sub-icon { font-size:15px; }
-    .footer-section { width:100%; max-width:480px; margin:0 auto; animation:fadeIn 0.5s 0.32s ease both; }
+    .footer-section { width:100%; margin:0 auto; animation:fadeIn 0.5s 0.32s ease both; }
     .footer-note { position:relative; z-index:1; margin-top:24px; font-size:11px; color:var(--text-muted); opacity:0.4; animation:fadeIn 0.5s 0.4s ease both; }
   </style>
 </head>
