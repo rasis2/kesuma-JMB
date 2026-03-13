@@ -18,14 +18,13 @@
     h1 span { color:var(--accent); }
     .subtitle { color:var(--text-muted); font-size:13px; line-height:1.7; margin-bottom:28px; animation:fadeIn 0.5s 0.16s ease both; }
 
-    /* System blocks */
-    .sys-block { width:100%; max-width:480px; margin:0 auto 14px; animation:fadeIn 0.5s 0.2s ease both; }
+    .sys-block { width:100%; max-width:480px; margin:0 auto 14px; animation:fadeIn 0.5s ease both; }
     .sys-label-row { display:flex; align-items:center; gap:8px; margin-bottom:8px; padding:0 2px; }
     .sys-tag { font-size:10px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:var(--text-muted); }
     .sys-line { flex:1; height:1px; background:var(--border); }
 
-    /* Main sys card */
-    .sys-main { position:relative; background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:18px 20px; text-decoration:none; color:inherit; display:flex; align-items:center; gap:14px; transition:all 0.2s; margin-bottom:8px; }
+    /* Big single card */
+    .sys-main { position:relative; background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:18px 20px; text-decoration:none; color:inherit; display:flex; align-items:center; gap:14px; transition:all 0.2s; }
     .sys-main:hover { transform:translateX(3px); box-shadow:var(--shadow); border-color:rgba(var(--accent-rgb),0.3); }
     .sys-main-icon { width:44px; height:44px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:22px; flex-shrink:0; }
     .sys-main-icon.gold { background:var(--accent-dim); border:1px solid rgba(var(--accent-rgb),0.2); }
@@ -36,19 +35,27 @@
     .sys-arrow { color:var(--text-muted); font-size:14px; transition:all 0.2s; }
     .sys-main:hover .sys-arrow { color:var(--accent); transform:translateX(3px); }
 
-    /* Sub links */
-    .sub-links { display:grid; grid-template-columns:1fr 1fr; gap:7px; }
-    .sub-card { background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:10px 12px; text-decoration:none; color:inherit; display:flex; align-items:center; gap:8px; transition:all 0.2s; font-size:12px; font-weight:600; }
-    .sub-card:hover { border-color:rgba(var(--accent-rgb),0.35); background:var(--surface); }
-    .sub-card-lg { padding:14px; align-items:flex-start; flex-direction:row; gap:10px; }
-    .sub-card-lg .sub-icon { font-size:20px; margin-top:1px; }
-    .sub-name { font-size:13px; font-weight:700; font-family:var(--heading-font); margin-bottom:2px; }
-    .sub-desc { font-size:10px; color:var(--text-muted); font-weight:400; line-height:1.4; }
-    .sub-card-center { flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:12px 8px; gap:5px; font-size:11px; }
-    .sub-card-center .sub-icon { font-size:18px; }
+    /* Sub grid */
+    .sub-links { display:grid; gap:7px; }
+    .sub-links-2 { grid-template-columns:1fr 1fr; }
+    .sub-links-3 { grid-template-columns:1fr 1fr 1fr; }
+    .sub-links-4 { grid-template-columns:repeat(4,1fr); }
 
-    /* Admin row */
-    .admin-row { width:100%; max-width:480px; margin:0 auto; animation:fadeIn 0.5s 0.32s ease both; }
+    .sub-card { background:var(--surface2); border:1px solid var(--border); border-radius:10px; text-decoration:none; color:inherit; display:flex; align-items:center; gap:8px; transition:all 0.2s; font-size:12px; font-weight:600; padding:10px 12px; }
+    .sub-card:hover { border-color:rgba(var(--accent-rgb),0.35); background:var(--surface); }
+
+    /* Large card — icon + title + desc, stacked */
+    .sub-card-lg { padding:14px 12px; flex-direction:column; align-items:flex-start; gap:6px; }
+    .sub-card-lg .sub-icon { font-size:20px; }
+    .sub-name { font-size:12px; font-weight:700; font-family:var(--heading-font); margin-bottom:2px; }
+    .sub-desc { font-size:10px; color:var(--text-muted); font-weight:400; line-height:1.4; }
+
+    /* Small icon card — center aligned */
+    .sub-card-sm { flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:12px 6px; gap:5px; font-size:10px; }
+    .sub-card-sm .sub-icon { font-size:18px; }
+
+    .sub-icon { font-size:15px; }
+    .footer-section { width:100%; max-width:480px; margin:0 auto; animation:fadeIn 0.5s 0.32s ease both; }
     .footer-note { position:relative; z-index:1; margin-top:24px; font-size:11px; color:var(--text-muted); opacity:0.4; animation:fadeIn 0.5s 0.4s ease both; }
   </style>
 </head>
@@ -64,57 +71,87 @@
     <h1 id="txt-h1"></h1>
     <p class="subtitle" id="txt-subtitle"></p>
 
-    <!-- PARCEL SYSTEM -->
-     <div class="sys-block" style="animation-delay:0.26s">
+    <!-- 1. PARCEL — big single card -->
+    <div class="sys-block" style="animation-delay:0.18s">
       <div class="sys-label-row">
         <div class="sys-line"></div>
-        <span class="sys-tag" id="txt-sys-visitor-tag"></span>
+        <span class="sys-tag" id="txt-parcel-tag"></span>
         <div class="sys-line"></div>
       </div>
       <a href="dispatcher.html" class="sys-main">
-        <div class="sys-main-icon teal">🚚</div>
+        <div class="sys-main-icon gold">📦</div>
         <div class="sys-main-info">
-          <div class="sys-main-name" id="txt-sys-visitor"></div>
-          <div class="sys-main-desc" id="txt-sys-visitor-desc"></div>
+          <div class="sys-main-name" id="txt-parcel-name"></div>
+          <div class="sys-main-desc" id="txt-parcel-desc"></div>
         </div>
         <span class="sys-arrow">→</span>
       </a>
     </div>
 
-    <!-- VISITOR SYSTEM -->
-    <div class="sys-block" style="animation-delay:0.2s">
+    <!-- 2. VISITOR — 2 cards -->
+    <div class="sys-block" style="animation-delay:0.22s">
       <div class="sys-label-row">
         <div class="sys-line"></div>
-        <span class="sys-tag" id="txt-sys-parcel-tag"></span>
+        <span class="sys-tag" id="txt-visitor-tag"></span>
         <div class="sys-line"></div>
       </div>
-      <div class="sub-links">
-        <a href="visitor-register.html" class="sub-card sub-card-lg"><span class="sub-icon">🪪</span><div><div class="sub-name" id="txt-dispatcher"></div><div class="sub-desc" id="txt-dispatcher-desc"></div></div></a>
-        <a href="visitor-check.html" class="sub-card sub-card-lg"><span class="sub-icon">🔍</span><div><div class="sub-name" id="txt-owner"></div><div class="sub-desc" id="txt-owner-desc"></div></div></a>
+      <div class="sub-links sub-links-2">
+        <a href="visitor-register.html" class="sub-card sub-card-lg">
+          <span class="sub-icon">🪪</span>
+          <div>
+            <div class="sub-name" id="txt-vis-reg-name"></div>
+            <div class="sub-desc" id="txt-vis-reg-desc"></div>
+          </div>
+        </a>
+        <a href="visitor-check.html" class="sub-card sub-card-lg">
+          <span class="sub-icon">🔍</span>
+          <div>
+            <div class="sub-name" id="txt-vis-chk-name"></div>
+            <div class="sub-desc" id="txt-vis-chk-desc"></div>
+          </div>
+        </a>
       </div>
     </div>
 
-    <!-- Residential SYSTEM -->
-    <div class="sys-block" style="animation-delay:0.2s">
+    <!-- 3. RESIDENTIAL — 3 cards: Guard, Owner, Admin -->
+    <div class="sys-block" style="animation-delay:0.26s">
       <div class="sys-label-row">
         <div class="sys-line"></div>
-        <span class="sys-tag" id="txt-sys-parcel-tag"></span>
+        <span class="sys-tag" id="txt-res-tag"></span>
         <div class="sys-line"></div>
       </div>
-      <div class="sub-links">
-        <a href="guard.html" class="sub-card sub-card-lg"><span class="sub-icon">🛡️</span><div><div class="sub-name" id="txt-dispatcher"></div><div class="sub-desc" id="txt-dispatcher-desc"></div></div></a>
-        <a href="owner.html" class="sub-card sub-card-lg"><span class="sub-icon">🏠</span><div><div class="sub-name" id="txt-owner"></div><div class="sub-desc" id="txt-owner-desc"></div></div></a>
-        <a href="admin.html" class="sub-card sub-card-lg"><span class="sub-icon">⚙️</span><div><div class="sub-name" id="txt-owner"></div><div class="sub-desc" id="txt-owner-desc"></div></div></a>
+      <div class="sub-links sub-links-3">
+        <a href="guard.html" class="sub-card sub-card-lg">
+          <span class="sub-icon">🛡️</span>
+          <div>
+            <div class="sub-name" id="txt-guard-name"></div>
+            <div class="sub-desc" id="txt-guard-desc"></div>
+          </div>
+        </a>
+        <a href="owner.html" class="sub-card sub-card-lg">
+          <span class="sub-icon">🏠</span>
+          <div>
+            <div class="sub-name" id="txt-owner-name"></div>
+            <div class="sub-desc" id="txt-owner-desc"></div>
+          </div>
+        </a>
+        <a href="admin.html" class="sub-card sub-card-lg">
+          <span class="sub-icon">⚙️</span>
+          <div>
+            <div class="sub-name" id="txt-admin-name"></div>
+            <div class="sub-desc" id="txt-admin-desc"></div>
+          </div>
+        </a>
       </div>
     </div>
 
-    <!-- UTILITY GRID — guard, owner, plan, admin, how, about, contact -->
-    <div class="admin-row">
-      <div class="sub-links" style="grid-template-columns:repeat(4,1fr)">
-        <a href="plan.html" class="sub-card sub-card-center"><span class="sub-icon">🚀</span><span id="txt-plan"></span></a>
-        <a href="how.html" class="sub-card sub-card-center"><span class="sub-icon">📖</span><span id="txt-how"></span></a>
-        <a href="about.html" class="sub-card sub-card-center"><span class="sub-icon">✦</span><span id="txt-about"></span></a>
-        <a href="contact.html" class="sub-card sub-card-center"><span class="sub-icon">💬</span><span id="txt-contact"></span></a>
+    <!-- 4. INFO — 4 small cards -->
+    <div class="footer-section">
+      <div class="sub-links sub-links-4">
+        <a href="plan.html" class="sub-card sub-card-sm"><span class="sub-icon">🚀</span><span id="txt-plan"></span></a>
+        <a href="how.html" class="sub-card sub-card-sm"><span class="sub-icon">📖</span><span id="txt-how"></span></a>
+        <a href="about.html" class="sub-card sub-card-sm"><span class="sub-icon">✦</span><span id="txt-about"></span></a>
+        <a href="contact.html" class="sub-card sub-card-sm"><span class="sub-icon">💬</span><span id="txt-contact"></span></a>
       </div>
     </div>
   </div>
@@ -125,29 +162,34 @@
   <script>
     renderLangSwitcher('langSwitcher')
     renderThemeSwitcher('themeSwitcher')
-    document.getElementById('txt-badge').textContent = t('index_badge')
-    document.getElementById('txt-h1').innerHTML = t('index_title1')+'<br><span>'+t('index_title2')+'</span>'
-    document.getElementById('txt-subtitle').textContent = t('index_subtitle')
-    document.getElementById('txt-sys-parcel-tag').textContent = t('sys_parcel')
-    document.getElementById('txt-dispatcher').textContent = t('card_dispatcher')
-    document.getElementById('txt-dispatcher-desc').textContent = t('card_dispatcher_desc')
-    document.getElementById('txt-owner').textContent = t('card_owner')
-    document.getElementById('txt-owner-desc').textContent = t('card_owner_desc')
-    document.getElementById('txt-sys-visitor-tag').textContent = t('sys_visitor')
-    document.getElementById('txt-sys-visitor').textContent = t('sys_visitor')
-    document.getElementById('txt-sys-visitor-desc').textContent = t('sys_visitor_desc')
-    document.getElementById('txt-guard').textContent = t('guard_title')
-    document.getElementById('txt-owner-util').textContent = t('card_owner')
-    document.getElementById('txt-plan').textContent = t('plan_short')
-    document.getElementById('txt-admin').textContent = t('card_admin')
-    document.getElementById('txt-how').textContent = t('card_how')
-    document.getElementById('txt-about').textContent = t('card_about')
-    document.getElementById('txt-contact').textContent = t('contact_title')
-    document.getElementById('txt-vis-check-util').textContent = t('vis_check_title')
-    document.getElementById('txt-how').textContent = t('card_how')
-    document.getElementById('txt-about').textContent = t('card_about')
-    document.getElementById('txt-contact').textContent = t('contact_title')
-    document.getElementById('txt-footer').textContent = t('footer')
+
+    document.getElementById('txt-badge').textContent        = t('index_badge')
+    document.getElementById('txt-h1').innerHTML             = t('index_title1')+'<br><span>'+t('index_title2')+'</span>'
+    document.getElementById('txt-subtitle').textContent     = t('index_subtitle')
+
+    document.getElementById('txt-parcel-tag').textContent   = t('sys_parcel')
+    document.getElementById('txt-parcel-name').textContent  = t('sys_parcel')
+    document.getElementById('txt-parcel-desc').textContent  = t('sys_parcel_desc')
+
+    document.getElementById('txt-visitor-tag').textContent  = t('sys_visitor')
+    document.getElementById('txt-vis-reg-name').textContent = t('vis_register_title')
+    document.getElementById('txt-vis-reg-desc').textContent = t('vis_register_desc')
+    document.getElementById('txt-vis-chk-name').textContent = t('vis_check_title')
+    document.getElementById('txt-vis-chk-desc').textContent = t('vis_check_desc')
+
+    document.getElementById('txt-res-tag').textContent      = t('res_tag')
+    document.getElementById('txt-guard-name').textContent   = t('guard_title')
+    document.getElementById('txt-guard-desc').textContent   = t('guard_desc')
+    document.getElementById('txt-owner-name').textContent   = t('card_owner')
+    document.getElementById('txt-owner-desc').textContent   = t('card_owner_desc')
+    document.getElementById('txt-admin-name').textContent   = t('card_admin')
+    document.getElementById('txt-admin-desc').textContent   = t('card_admin_desc')
+
+    document.getElementById('txt-plan').textContent         = t('plan_short')
+    document.getElementById('txt-how').textContent          = t('card_how')
+    document.getElementById('txt-about').textContent        = t('card_about')
+    document.getElementById('txt-contact').textContent      = t('contact_title')
+    document.getElementById('txt-footer').textContent       = t('footer')
   </script>
 </body>
 </html>
