@@ -122,3 +122,59 @@ async function apiUpdateOwner(unit, { email, phone }) {
   if (!res.ok) throw new Error(await res.text())
   return true
 }
+
+// ═══════════════════════════════════════
+//  Visitor API Functions
+// ═══════════════════════════════════════
+
+// Generate ref code: KES + random 6 chars
+function genRefCode() {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'
+  let code = 'KES'
+  for (let i = 0; i < 6; i++) code += chars[Math.floor(Math.random() * chars.length)]
+  return code
+}
+
+// Register new visitor
+async function apiRegisterVisitor({ name, ic_no, phone, unit, purpose }) {
+  const ref_code = genRefCode()
+  const res = await sbFetch('/rest/v1/visitors', {
+    method: 'POST',
+    headers: { ...HEADERS, 'Prefer': 'return=representation' },
+    body: JSON.stringify({ ref_code, name, ic_no, phone, unit, purpose, status: 'Pending' })
+  })
+  if (!res.ok) throw new Error(await res.text())
+  const data = await res.json()
+  return data[0]
+}
+
+// Check visitor by ref code
+async function apiCheckVisitor(ref_code) {
+  const res = await sbFetch('/rest/v1/visitors?ref_code=eq.' + encodeURIComponent(ref_code) + '&select=*')
+  const data = await res.json()
+  if (!data.length) return { error: 'Ref code not found' }
+  return data[0]
+}
+
+// Guard: get all visitors (today)
+async function apiGetVisitors() {
+  const res = await sbFetch('/rest/v1/visitors?select=*&order=created_at.desc&limit=200')
+  if (!res.ok) throw new Error(await res.text())
+  return res.json()
+}
+
+// Guard: update visitor status
+async function apiUpdateVisitor(id, status) {
+  const update = { status }
+  if (status === 'Checked In') update.checked_in_at = new Date().toISOString()
+  if (status === 'Checked Out') update.checked_out_at = new Date().toISOString()
+  if (status === 'Approved') update.approved_at = new Date().toISOString()
+
+  const res = await sbFetch('/rest/v1/visitors?id=eq.' + id, {
+    method: 'PATCH',
+    headers: { ...HEADERS, 'Prefer': 'return=minimal' },
+    body: JSON.stringify(update)
+  })
+  if (!res.ok) throw new Error(await res.text())
+  return true
+}

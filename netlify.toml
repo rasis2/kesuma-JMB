@@ -47,3 +47,28 @@
     X-Frame-Options = "DENY"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
+
+[[redirects]]
+  from = "/parcel"
+  to = "/parcel.html"
+  status = 200
+
+[[redirects]]
+  from = "/visitor"
+  to = "/visitor.html"
+  status = 200
+
+[[redirects]]
+  from = "/visitor-register"
+  to = "/visitor-register.html"
+  status = 200
+
+[[redirects]]
+  from = "/visitor-check"
+  to = "/visitor-check.html"
+  status = 200
+
+[[redirects]]
+  from = "/guard"
+  to = "/guard.html"
+  status = 200
