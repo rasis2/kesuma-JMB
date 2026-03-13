@@ -257,3 +257,14 @@ table input { padding: 6px 10px; font-size: 12px; border-radius: 6px; }
   .page-title { font-size: 22px; }
   .parcel-img { width: 56px; height: 56px; }
 }
+
+/* Dropdown buttons (theme/lang switcher) */
+._dd-btn {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 5px 10px; border-radius: 8px;
+  border: 1px solid var(--border); background: var(--surface2);
+  color: var(--text); font-size: 12px; font-weight: 600;
+  cursor: pointer; font-family: var(--body-font);
+  transition: all 0.2s; white-space: nowrap;
+}
+._dd-btn:hover { border-color: rgba(var(--accent-rgb),0.4); background: var(--surface); }
