@@ -44,9 +44,9 @@
     .sub-card { background:var(--surface2); border:1px solid var(--border); border-radius:10px; text-decoration:none; color:inherit; display:flex; align-items:center; gap:8px; transition:all 0.2s; font-size:12px; font-weight:600; padding:10px 12px; }
     .sub-card:hover { border-color:rgba(var(--accent-rgb),0.35); background:var(--surface); }
 
-    /* Large card — icon + title + desc, horizontal */
-    .sub-card-lg { padding:14px 12px; align-items:center; gap:12px; }
-    .sub-card-lg .sub-icon { font-size:20px; flex-shrink:0; }
+    /* Large card — icon + title + desc, horizontal, left-aligned */
+    .sub-card-lg { padding:14px 12px; align-items:flex-start; gap:10px; }
+    .sub-card-lg .sub-icon { font-size:20px; flex-shrink:0; margin-top:1px; }
     .sub-name { font-size:12px; font-weight:700; font-family:var(--heading-font); margin-bottom:2px; }
     .sub-desc { font-size:10px; color:var(--text-muted); font-weight:400; line-height:1.4; }
 
@@ -102,15 +102,15 @@
         <div class="sys-line"></div>
       </div>
       <div class="sub-links sub-links-2">
-        <a href="visitor-register.html" class="sub-card sub-card-lg" style="align-items:flex-start">
-          <span class="sub-icon" style="margin-top:2px">🪪</span>
+        <a href="visitor-register.html" class="sub-card sub-card-lg">
+          <span class="sub-icon">🪪</span>
           <div>
             <div class="sub-name" id="txt-vis-reg-name"></div>
             <div class="sub-desc" id="txt-vis-reg-desc"></div>
           </div>
         </a>
-        <a href="visitor-check.html" class="sub-card sub-card-lg" style="align-items:flex-start">
-          <span class="sub-icon" style="margin-top:2px">🔍</span>
+        <a href="visitor-check.html" class="sub-card sub-card-lg">
+          <span class="sub-icon">🔍</span>
           <div>
             <div class="sub-name" id="txt-vis-chk-name"></div>
             <div class="sub-desc" id="txt-vis-chk-desc"></div>
@@ -119,7 +119,7 @@
       </div>
     </div>
 
-    <!-- 3. RESIDENTIAL — 3 cards: Guard, Owner, Admin (icon only) -->
+    <!-- 3. RESIDENTIAL — 3 cards: Guard, Owner, Admin (icon + name only) -->
     <div class="sys-block" style="animation-delay:0.26s">
       <div class="sys-label-row">
         <div class="sys-line"></div>
@@ -129,6 +129,7 @@
       <div class="sub-links sub-links-3">
         <a href="guard.html" class="sub-card sub-card-icon">
           <span class="sub-icon">🛡️</span>
+          <span id="txt-guard-name"></span>
         </a>
         <a href="owner.html" class="sub-card sub-card-icon">
           <span class="sub-icon">🏠</span>
@@ -179,6 +180,7 @@
     document.getElementById('txt-vis-chk-desc').textContent = t('vis_check_desc')
 
     document.getElementById('txt-res-tag').textContent      = t('res_tag')
+    document.getElementById('txt-guard-name').textContent   = t('guard_title')
     document.getElementById('txt-owner-name').textContent   = t('card_owner')
     document.getElementById('txt-admin-name').textContent   = t('card_admin')
 
